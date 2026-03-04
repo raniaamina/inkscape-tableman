@@ -220,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cg.appendChild(col);
         }
         gridTable.prepend(cg);
+        gridTable.style.width = colWidths.reduce((a, b) => a + b, 0) + 'px';
 
         contentGrid.innerHTML = ''; clearSel();
 
@@ -376,31 +377,46 @@ document.addEventListener('DOMContentLoaded', () => {
     function addResizeHandles() {
         document.querySelectorAll('.col-resize-handle,.row-resize-handle').forEach(h => h.remove());
         const wrapper = document.getElementById('grid-inner-rel');
-        const cols = parseInt(tableColsInput.value) || 3, rows = parseInt(tableRowsInput.value) || 3;
+        const rows = gridTable.rows, colsCount = parseInt(tableColsInput.value) || 3;
+        if (!rows || rows.length === 0) return;
 
-        let xOff = 0;
-        for (let c = 0; c < cols - 1; c++) {
-            xOff += colWidths[c];
+        // Handles for every column boundary (including the last one)
+        const firstRowCells = rows[0].cells;
+        for (let c = 0; c < firstRowCells.length; c++) {
+            const cell = firstRowCells[c];
+            const xPos = cell.offsetLeft + cell.offsetWidth;
             const h = document.createElement('div'); h.className = 'col-resize-handle';
-            h.style.left = (xOff - 2) + 'px'; h.style.top = '0'; h.style.height = gridTable.offsetHeight + 'px';
-            h.dataset.col = c; wrapper.appendChild(h);
+            h.style.left = (xPos - 2) + 'px'; h.style.top = '0'; h.style.height = gridTable.offsetHeight + 'px';
+            h.dataset.col = cell.dataset.col;
+            wrapper.appendChild(h);
             h.addEventListener('mousedown', e => {
-                e.preventDefault(); const sx = e.clientX, sw = colWidths[c];
-                const mv = ev => { colWidths[c] = Math.max(30, sw + (ev.clientX - sx)); buildGrid(); };
+                e.preventDefault();
+                const colIdx = parseInt(h.dataset.col);
+                const sx = e.clientX, sw = colWidths[colIdx];
+                const mv = ev => { colWidths[colIdx] = Math.max(30, sw + (ev.clientX - sx)); buildGrid(); };
                 const up = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
                 document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
             });
         }
 
-        let yOff = 0;
-        for (let r = 0; r < rows - 1; r++) {
-            yOff += rowHeights[r];
+        // Handles for every row boundary (including the last one)
+        for (let r = 0; r < rows.length; r++) {
+            const row = rows[r];
+            const yPos = row.offsetTop + row.offsetHeight;
             const h = document.createElement('div'); h.className = 'row-resize-handle';
-            h.style.top = (yOff - 2) + 'px'; h.style.left = '0'; h.style.width = gridTable.offsetWidth + 'px';
-            h.dataset.row = r; wrapper.appendChild(h);
+            h.style.top = (yPos - 2) + 'px'; h.style.left = '0'; h.style.width = gridTable.offsetWidth + 'px';
+            // Find the first cell in this row that has a data-row attribute
+            let rowIdx = -1;
+            for (const cell of row.cells) { if (cell.dataset.row) { rowIdx = parseInt(cell.dataset.row); break; } }
+            if (rowIdx === -1) continue;
+
+            h.dataset.row = rowIdx;
+            wrapper.appendChild(h);
             h.addEventListener('mousedown', e => {
-                e.preventDefault(); const sy = e.clientY, sh = rowHeights[r];
-                const mv = ev => { rowHeights[r] = Math.max(20, sh + (ev.clientY - sy)); buildGrid(); };
+                e.preventDefault();
+                const rIdx = parseInt(h.dataset.row);
+                const sy = e.clientY, sh = rowHeights[rIdx];
+                const mv = ev => { rowHeights[rIdx] = Math.max(20, sh + (ev.clientY - sy)); buildGrid(); };
                 const up = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
                 document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
             });
@@ -750,6 +766,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     initTheme();
+
+    // ─── CSV IMPORT ──────────────────────────────────────────
+    const btnImportCSV = document.getElementById('btn-import-csv');
+    const csvImportInput = document.getElementById('csv-import-input');
+
+    function parseCSV(text) {
+        const rows = [];
+        let row = [];
+        let field = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i + 1];
+            if (inQuotes) {
+                if (char === '"' && nextChar === '"') {
+                    field += '"'; i++;
+                } else if (char === '"') {
+                    inQuotes = false;
+                } else {
+                    field += char;
+                }
+            } else {
+                if (char === '"') {
+                    inQuotes = true;
+                } else if (char === ',') {
+                    row.push(field); field = '';
+                } else if (char === '\r' || char === '\n') {
+                    row.push(field); rows.push(row); row = []; field = '';
+                    if (char === '\r' && nextChar === '\n') i++;
+                } else {
+                    field += char;
+                }
+            }
+        }
+        if (field || row.length > 0) { row.push(field); rows.push(row); }
+        return rows.filter(r => r.length > 0);
+    }
+
+    if (btnImportCSV && csvImportInput) {
+        btnImportCSV.addEventListener('click', () => csvImportInput.click());
+        csvImportInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const data = parseCSV(ev.target.result);
+                if (data.length === 0) return;
+                storeData();
+                const rows = data.length;
+                const cols = Math.max(...data.map(r => r.length));
+                tableRowsInput.value = rows;
+                tableColsInput.value = cols;
+                window._tableData = Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => data[r][c] || ''));
+                cellStyles = []; merges = []; colWidths = []; rowHeights = [];
+                ensureStyles(rows, cols);
+                ensureDimArrays();
+                buildGrid();
+                csvImportInput.value = ''; // Reset for same file re-import
+            };
+            reader.readAsText(file);
+        });
+    }
 
     loadFonts(); loadTableList();
 });
