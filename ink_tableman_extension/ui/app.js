@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editorTitle = document.getElementById('editor-title');
     const editorForm = document.getElementById('editor-form');
     const tableIdInput = document.getElementById('table-id');
+    const themeSelect = document.getElementById('theme-select');
     const tableLabelInput = document.getElementById('table-label');
     const tableRowsInput = document.getElementById('table-rows');
     const tableColsInput = document.getElementById('table-cols');
@@ -36,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const defCS = () => ({
         bold: false, italic: false, underline: false, strikethrough: false,
         textColor: null, fillColor: null, fontFamily: null, fontSize: null,
-        hAlign: 'center', vAlign: 'middle', wrap: false, rotation: 0
+        hAlign: 'center', vAlign: 'middle', wrap: false, rotation: 0,
+        format: 'auto', decimals: 2
     });
 
     function ensureStyles(rows, cols) {
@@ -52,6 +54,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function getCS(r, c) { return (r < cellStyles.length && c < cellStyles[r].length) ? cellStyles[r][c] : defCS(); }
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
+    function formatValue(val, format, decs = 2) {
+        if (!val || format === 'text' || format === 'auto' && isNaN(val)) return val;
+        const num = parseFloat(val.toString().replace(/[^0-9.-]/g, ''));
+        if (isNaN(num)) return val;
+
+        try {
+            const locale = 'id-ID';
+            switch (format) {
+                case 'number': return new Intl.NumberFormat(locale, { minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num);
+                case 'percent': return new Intl.NumberFormat(locale, { style: 'percent', minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num / 100);
+                case 'currency': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', minimumFractionDigits: decs }).format(num);
+                case 'currency_round': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+                case 'scientific': return num.toExponential(decs);
+                case 'date': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale).format(new Date(val));
+                case 'time': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: 'numeric', second: 'numeric' }).format(new Date(val));
+                case 'datetime': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(val));
+                default: return val;
+            }
+        } catch (e) { return val; }
+    }
+
     function ensureDimArrays() {
         const rows = parseInt(tableRowsInput.value) || 3, cols = parseInt(tableColsInput.value) || 3;
         const defW = parseFloat(document.getElementById('cell-width').value) || 120;
@@ -63,6 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── NAV ─────────────────────────────────────────────────
     function showLanding() { screenEditor.classList.add('hidden'); screenLanding.classList.remove('hidden'); loadTableList(); }
+
+    // About Modal Logic
+    document.getElementById('btn-show-about').addEventListener('click', () => document.getElementById('about-modal').classList.remove('hidden'));
+    document.getElementById('btn-close-about').addEventListener('click', () => document.getElementById('about-modal').classList.add('hidden'));
+    window.addEventListener('click', e => { if (e.target.id === 'about-modal') document.getElementById('about-modal').classList.add('hidden'); });
     function showEditor(t) {
         screenLanding.classList.add('hidden'); screenEditor.classList.remove('hidden');
         editorTitle.textContent = t || 'New Table'; statusContainer.classList.add('hidden');
@@ -203,11 +231,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 inner.className = 'cell-inner';
                 inner.contentEditable = true;
 
-                if (r < data.length && c < data[r].length) inner.textContent = data[r][c];
-                else if (r === 0) inner.textContent = `Col ${c + 1}`;
+                if (r < data.length && c < data[r].length) {
+                    const s = getCS(r, c);
+                    inner.textContent = formatValue(data[r][c], s.format, s.decimals);
+                } else if (r === 0) inner.textContent = `Col ${c + 1}`;
 
                 td.appendChild(inner);
                 applyCellVisual(td, inner, r, c);
+
+                inner.addEventListener('focus', () => {
+                    const raw = (r < data.length && c < data[r].length) ? data[r][c] : '';
+                    inner.textContent = raw;
+                });
+
+                inner.addEventListener('blur', () => {
+                    const s = getCS(r, c);
+                    const val = inner.textContent;
+                    if (r >= data.length) while (data.length <= r) data.push([]);
+                    data[r][c] = val;
+                    inner.textContent = formatValue(val, s.format, s.decimals);
+                });
 
                 td.addEventListener('mousedown', e => {
                     if (e.target.classList.contains('cell-inner')) return; // let inner handle focus
@@ -387,10 +430,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ['bold', 'italic', 'underline', 'strike'].forEach(k => {
             document.getElementById(`tb-${k}`).classList.toggle('active', !!s[k === 'strike' ? 'strikethrough' : k]);
         });
-        updateDDActive('dd-halign', s.hAlign || 'center');
-        updateDDActive('dd-valign', s.vAlign || 'middle');
         updateDDActive('dd-wrap', s.wrap ? 'true' : 'false');
         updateDDActive('dd-rotation', String(s.rotation || 0));
+        updateDDActive('dd-number-format', s.format || 'auto');
     }
 
     function updateDDActive(id, val) {
@@ -407,7 +449,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Re-apply visuals
         contentGrid.querySelectorAll('td.selected').forEach(td => {
             const inner = td.querySelector('.cell-inner');
-            if (inner) applyCellVisual(td, inner, parseInt(td.dataset.row), parseInt(td.dataset.col));
+            const r = parseInt(td.dataset.row), c = parseInt(td.dataset.col);
+            if (inner) {
+                applyCellVisual(td, inner, r, c);
+                // Also update text if not focused to show new format
+                if (document.activeElement !== inner) {
+                    const data = window._tableData || [];
+                    const val = (r < data.length && c < data[r].length) ? data[r][c] : '';
+                    const s = getCS(r, c);
+                    inner.textContent = formatValue(val, s.format, s.decimals);
+                }
+            }
         });
     }
 
@@ -432,7 +484,27 @@ document.addEventListener('DOMContentLoaded', () => {
     tbTextColor.addEventListener('input', () => { document.getElementById('tb-text-color-bar').style.background = tbTextColor.value; applyToSel('textColor', tbTextColor.value); });
     tbFillColor.addEventListener('input', () => { document.getElementById('tb-fill-color-bar').style.background = tbFillColor.value; applyToSel('fillColor', tbFillColor.value); });
 
+    // Formatting buttons
+    document.getElementById('btn-fmt-currency').addEventListener('click', () => applyToSel('format', 'currency'));
+    document.getElementById('btn-fmt-percent').addEventListener('click', () => applyToSel('format', 'percent'));
+    document.getElementById('btn-fmt-dec-less').addEventListener('click', () => {
+        if (!selStart) return;
+        const s = getCS(selStart.row, selStart.col);
+        applyToSel('decimals', Math.max(0, (s.decimals || 0) - 1));
+    });
+    document.getElementById('btn-fmt-dec-more').addEventListener('click', () => {
+        if (!selStart) return;
+        const s = getCS(selStart.row, selStart.col);
+        applyToSel('decimals', Math.min(10, (s.decimals || 0) + 1));
+    });
+
     // Dropdowns
+    setupDD('dd-halign', 'hAlign');
+    setupDD('dd-valign', 'vAlign');
+    setupDD('dd-wrap', 'wrap', v => v === 'true');
+    setupDD('dd-rotation', 'rotation', v => v === 'stack' ? 'stack' : parseInt(v));
+    setupDD('dd-number-format', 'format');
+
     function setupDD(id, prop, xform) {
         const dd = document.getElementById(id);
         dd.querySelector('.tb-dd-trigger').addEventListener('click', e => {
@@ -449,9 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-    setupDD('dd-halign', 'hAlign');
-    setupDD('dd-valign', 'vAlign');
-    setupDD('dd-wrap', 'wrap', v => v === 'true');
     setupDD('dd-rotation', 'rotation', v => v === 'stack' ? 'stack' : parseFloat(v));
     document.addEventListener('click', () => document.querySelectorAll('.tb-dropdown.open').forEach(d => d.classList.remove('open')));
 
@@ -550,6 +619,35 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (e) { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
         }, 500);
     }
+
+    // ─── THEME ────────────────────────────────────────────────
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    async function initTheme() {
+        try {
+            const res = await fetch('/settings');
+            const s = await res.json();
+            const theme = s.theme || 'system';
+            themeSelect.value = theme;
+            applyTheme(theme);
+        } catch (e) { applyTheme('system'); }
+    }
+
+    themeSelect.addEventListener('change', async () => {
+        const val = themeSelect.value;
+        applyTheme(val);
+        try {
+            await fetch('/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ theme: val })
+            });
+        } catch (e) { }
+    });
+
+    initTheme();
 
     loadFonts(); loadTableList();
 });

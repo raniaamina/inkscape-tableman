@@ -33,6 +33,22 @@ TABLEMAN_NS = 'http://raniaamina.id/tableman'
 TABLEMAN_PREFIX = 'tableman'
 INKSCAPE_LABEL_NS = 'http://www.inkscape.org/namespaces/inkscape'
 
+SETTINGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json')
+
+def load_settings():
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, 'r') as f:
+                return json.load(f)
+        except: pass
+    return {"theme": "system"}
+
+def save_settings(s):
+    try:
+        with open(SETTINGS_FILE, 'w') as f:
+            json.dump(s, f)
+    except: pass
+
 
 def get_system_fonts():
     fallback = ['sans-serif','serif','monospace','Arial','Helvetica',
@@ -81,6 +97,7 @@ class TablemanExtension(inkex.EffectExtension):
                 d=self.ext.load_table(urllib.parse.unquote(self.path[7:]))
                 self._json(d if d else {'error':'Not found'}, 200 if d else 404)
             elif self.path=='/fonts': self._json({'fonts':get_system_fonts()})
+            elif self.path=='/settings': self._json(load_settings())
             else: super().do_GET()
 
         def do_POST(self):
@@ -90,6 +107,9 @@ class TablemanExtension(inkex.EffectExtension):
                 self._json({'status':'started'})
             elif self.path=='/delete':
                 self._json(self.ext.delete_table(self._body().get('id')))
+            elif self.path=='/settings':
+                save_settings(self._body())
+                self._json({'status':'saved'})
             elif self.path=='/close':
                 self._json({'status':'closing'})
                 if GTK_UI_AVAILABLE: GLib.idle_add(Gtk.main_quit)
@@ -147,6 +167,33 @@ class TablemanExtension(inkex.EffectExtension):
         e=self.svg.getElementById(tid)
         if e is not None: e.getparent().remove(e); return {'status':'deleted'}
         return {'status':'error','message':'Not found'}
+
+    def format_value(self, val, fmt, decs=2):
+        if not val or fmt in ['text', 'auto'] or not any(c.isdigit() for c in str(val)):
+            return str(val)
+        try:
+            import re
+            num_str = re.sub(r'[^0-9.-]', '', str(val))
+            num = float(num_str)
+        except: return str(val)
+
+        try:
+            if fmt == 'number':
+                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
+                return s
+            elif fmt == 'percent':
+                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
+                return f"{s}%"
+            elif fmt == 'currency':
+                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
+                return f"Rp{s}"
+            elif fmt == 'currency_round':
+                s = "{:,.0f}".format(num).replace(',','X').replace('.',',').replace('X','.')
+                return f"Rp{s}"
+            elif fmt == 'scientific':
+                return "{:.{decs}e}".format(num, decs=decs)
+            return str(val)
+        except: return str(val)
 
     def _merge_at(self, merges, r, c):
         for m in merges:
@@ -231,6 +278,10 @@ class TablemanExtension(inkex.EffectExtension):
                 if r<len(cdat) and c<len(cdat[r]): ct=str(cdat[r][c])
                 if not ct: continue
 
+                fmt = cs.get('format', 'auto')
+                decs = int(cs.get('decimals', 2))
+                display_text = self.format_value(ct, fmt, decs)
+                
                 font=cs.get('fontFamily') or gf
                 fsize=float(cs.get('fontSize') or gfs)
                 tcolor=cs.get('textColor') or (ghtc if isH else gtc)
@@ -258,7 +309,7 @@ class TablemanExtension(inkex.EffectExtension):
 
                 if is_stack:
                     # Stack vertical: one character per line, centered
-                    chars = list(ct)
+                    chars = list(display_text)
                     total_h = len(chars) * fsize * 1.2
                     sx = x + cel_w / 2
                     if valign == 'top':
@@ -275,7 +326,7 @@ class TablemanExtension(inkex.EffectExtension):
                         ts2.text = ch; te.append(ts2)
                 elif wrap:
                     avg=fsize*0.6; mx=max(1,int((cel_w-2*pad)/avg))
-                    words=ct.split(' '); lines=[]; cur=''
+                    words=display_text.split(' '); lines=[]; cur=''
                     for w in words:
                         if cur and len(cur)+1+len(w)>mx: lines.append(cur); cur=w
                         else: cur=(cur+' '+w).strip()
@@ -287,7 +338,7 @@ class TablemanExtension(inkex.EffectExtension):
                         ts2.text=ln; te.append(ts2)
                 else:
                     te.set('x',str(tx)); te.set('y',str(ty))
-                    ts2=Tspan(); ts2.text=ct; te.append(ts2)
+                    ts2=Tspan(); ts2.text=display_text; te.append(ts2)
 
                 if rotation!=0:
                     cxr=x+cel_w/2; cyr=y+cel_h/2

@@ -14,8 +14,13 @@
         <!-- ═══ SCREEN 1: LANDING ═══ -->
         <div id="screen-landing">
             <header>
-                <h1>⊞ Tableman</h1>
-                <p>Table Manager for Inkscape by Rania Amina</p>
+                <div class="header-main">
+                    <h1>⊞ Tableman</h1>
+                    <p>Table Manager for Inkscape by Rania Amina</p>
+                </div>
+                <div class="header-links">
+                    <button class="btn-link" id="btn-show-about">About & Settings</button>
+                </div>
             </header>
             <div id="table-list" class="table-list">
                 <div class="table-list-loading">Scanning SVG for tables...</div>
@@ -23,6 +28,37 @@
             <div class="landing-actions">
                 <button class="btn-primary" id="btn-new-table">+ Create New Table</button>
                 <button class="btn-secondary" id="btn-close-landing">Close</button>
+            </div>
+
+            <!-- About Modal -->
+            <div id="about-modal" class="modal hidden">
+                <div class="modal-content about-card">
+                    <button class="btn-close-modal" id="btn-close-about">×</button>
+                    <h2>⊞ Tableman</h2>
+                    <p class="about-desc">A powerful and user-friendly Table Manager for Inkscape. Create, edit, and
+                        style tables with ease using a Google Sheets-inspired interface.</p>
+
+                    <div class="about-info">
+                        <div class="info-item"><span class="info-label">Creator</span><span class="info-value">Rania
+                                Amina</span></div>
+                        <div class="info-item"><span class="info-label">Version</span><span
+                                class="info-value">1.3.0</span></div>
+                        <div class="info-item"><span class="info-label">Links</span><span class="info-value"><a
+                                    href="https://github.com/raniaamina/ink_tableman" target="_blank">GitHub
+                                    Repository</a></span></div>
+                    </div>
+
+                    <div class="modal-section-title">Settings</div>
+                    <div class="form-group">
+                        <label for="theme-select">Appearance Theme</label>
+                        <select id="theme-select" class="tb-font">
+                            <option value="system">System Default</option>
+                            <option value="dark">Dark Mode</option>
+                            <option value="light">Light Mode</option>
+                        </select>
+                        <p class="help-text">Choose your preferred interface theme.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -131,6 +167,46 @@
 
                     <!-- ── RICH TOOLBAR (single row, wraps) ── -->
                     <div class="rich-toolbar" id="rich-toolbar">
+                        <!-- Number Formats -->
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" id="btn-fmt-currency"
+                                title="Format as Currency (Rp)">$</button>
+                            <button type="button" class="tb-btn" id="btn-fmt-percent"
+                                title="Format as Percent (%)">%</button>
+                            <button type="button" class="tb-btn" id="btn-fmt-dec-less"
+                                title="Decrease decimal places">.0<small>←</small></button>
+                            <button type="button" class="tb-btn" id="btn-fmt-dec-more"
+                                title="Increase decimal places">.00<small>→</small></button>
+
+                            <div class="tb-dropdown" id="dd-number-format">
+                                <button type="button" class="tb-btn tb-dd-trigger" title="More Formats">
+                                    <span>123</span> <small>▾</small>
+                                </button>
+                                <div class="tb-popup">
+                                    <button type="button" class="tb-popup-item active"
+                                        data-val="auto">Automatic</button>
+                                    <button type="button" class="tb-popup-item" data-val="text">Plain Text</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item" data-val="number">Number</button>
+                                    <button type="button" class="tb-popup-item" data-val="percent">Percent</button>
+                                    <button type="button" class="tb-popup-item"
+                                        data-val="scientific">Scientific</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item" data-val="currency">Currency
+                                        (Rp)</button>
+                                    <button type="button" class="tb-popup-item" data-val="currency_round">Currency
+                                        Rounded</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item" data-val="date">Date
+                                        (DD/MM/YYYY)</button>
+                                    <button type="button" class="tb-popup-item" data-val="time">Time</button>
+                                    <button type="button" class="tb-popup-item" data-val="datetime">Date Time</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="tb-sep"></span>
+
                         <!-- Font -->
                         <select id="tb-font" class="tb-font" title="Font Family">
                             <option>Loading...</option>
