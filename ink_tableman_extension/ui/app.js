@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bold: false, italic: false, underline: false, strikethrough: false,
         textColor: null, fillColor: null, fontFamily: null, fontSize: null,
         hAlign: 'center', vAlign: 'middle', wrap: false, rotation: 0,
-        format: 'auto', decimals: 2
+        format: 'auto', decimals: 2, currencySymbol: null
     });
 
     function ensureStyles(rows, cols) {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getCS(r, c) { return (r < cellStyles.length && c < cellStyles[r].length) ? cellStyles[r][c] : defCS(); }
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-    function formatValue(val, format, decs = 2) {
+    function formatValue(val, format, decs = 2, symbol = '$') {
         if (!val || format === 'text' || format === 'auto' && isNaN(val)) return val;
         const num = parseFloat(val.toString().replace(/[^0-9.-]/g, ''));
         if (isNaN(num)) return val;
@@ -65,9 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'number': return new Intl.NumberFormat(locale, { minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num);
                 case 'percent': return new Intl.NumberFormat(locale, { style: 'percent', minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num / 100);
                 case 'currency': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', minimumFractionDigits: decs }).format(num);
+                case 'currency_usd': return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: decs }).format(num);
+                case 'currency_eur': return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: decs }).format(num);
+                case 'currency_custom':
+                    const n = new Intl.NumberFormat(locale, { minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num);
+                    return `${symbol || '$'}${n}`;
                 case 'currency_round': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
                 case 'scientific': return num.toExponential(decs);
                 case 'date': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale).format(new Date(val));
+                case 'date_iso': return isNaN(Date.parse(val)) ? val : new Date(val).toISOString().split('T')[0];
+                case 'date_us': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat('en-US').format(new Date(val));
+                case 'date_long': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(val));
                 case 'time': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: 'numeric', second: 'numeric' }).format(new Date(val));
                 case 'datetime': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(val));
                 default: return val;
@@ -233,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (r < data.length && c < data[r].length) {
                     const s = getCS(r, c);
-                    inner.textContent = formatValue(data[r][c], s.format, s.decimals);
+                    inner.textContent = formatValue(data[r][c], s.format, s.decimals, s.currencySymbol);
                 } else if (r === 0) inner.textContent = `Col ${c + 1}`;
 
                 td.appendChild(inner);
@@ -249,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const val = inner.textContent;
                     if (r >= data.length) while (data.length <= r) data.push([]);
                     data[r][c] = val;
-                    inner.textContent = formatValue(val, s.format, s.decimals);
+                    inner.textContent = formatValue(val, s.format, s.decimals, s.currencySymbol);
                 });
 
                 td.addEventListener('mousedown', e => {
@@ -457,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = window._tableData || [];
                     const val = (r < data.length && c < data[r].length) ? data[r][c] : '';
                     const s = getCS(r, c);
-                    inner.textContent = formatValue(val, s.format, s.decimals);
+                    inner.textContent = formatValue(val, s.format, s.decimals, s.currencySymbol);
                 }
             }
         });
@@ -515,6 +523,12 @@ document.addEventListener('DOMContentLoaded', () => {
         dd.querySelectorAll('.tb-popup-item').forEach(item => {
             item.addEventListener('click', e => {
                 e.stopPropagation();
+                if (item.dataset.val === 'currency_custom') {
+                    const old = (selStart && getCS(selStart.row, selStart.col).currencySymbol) || '$';
+                    const sym = prompt('Enter custom currency symbol:', old);
+                    if (sym !== null) applyToSel('currencySymbol', sym);
+                    else return;
+                }
                 applyToSel(prop, xform ? xform(item.dataset.val) : item.dataset.val);
                 dd.querySelectorAll('.tb-popup-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active'); dd.classList.remove('open');

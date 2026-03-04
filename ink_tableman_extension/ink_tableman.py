@@ -168,7 +168,7 @@ class TablemanExtension(inkex.EffectExtension):
         if e is not None: e.getparent().remove(e); return {'status':'deleted'}
         return {'status':'error','message':'Not found'}
 
-    def format_value(self, val, fmt, decs=2):
+    def format_value(self, val, fmt, decs=2, sym=None):
         if not val or fmt in ['text', 'auto'] or not any(c.isdigit() for c in str(val)):
             return str(val)
         try:
@@ -178,20 +178,38 @@ class TablemanExtension(inkex.EffectExtension):
         except: return str(val)
 
         try:
+            locale_sep = ('.', ',') # thousands, decimal
+            def fmt_num(n, d, sep=locale_sep):
+                s = "{:,.{decs}f}".format(n, decs=d)
+                return s.replace(',','X').replace('.',sep[1]).replace('X',sep[0])
+
             if fmt == 'number':
-                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
-                return s
+                return fmt_num(num, decs)
             elif fmt == 'percent':
-                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
-                return f"{s}%"
+                return f"{fmt_num(num, decs)}%"
             elif fmt == 'currency':
-                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','X').replace('.',',').replace('X','.')
-                return f"Rp{s}"
-            elif fmt == 'currency_round':
-                s = "{:,.0f}".format(num).replace(',','X').replace('.',',').replace('X','.')
-                return f"Rp{s}"
+                return f"Rp{fmt_num(num, decs)}"
+            elif fmt == 'currency_usd':
+                s = "{:,.{decs}f}".format(num, decs=decs)
+                return f"${s}"
+            elif fmt == 'currency_eur':
+                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','.').replace('.',',',1) # simplified
+                return f"€{s}"
+            elif fmt == 'currency_custom':
+                return f"{sym or '$'}{fmt_num(num, decs)}"
             elif fmt == 'scientific':
                 return "{:.{decs}e}".format(num, decs=decs)
+            elif fmt.startswith('date'):
+                import datetime
+                try:
+                    dt = datetime.datetime.fromisoformat(str(val))
+                    if fmt == 'date_iso': return dt.strftime('%Y-%m-%d')
+                    if fmt == 'date_us': return dt.strftime('%m/%d/%Y')
+                    if fmt == 'date_long':
+                        months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+                        return f"{dt.day} {months[dt.month-1]} {dt.year}"
+                    return dt.strftime('%d/%m/%Y')
+                except: return str(val)
             return str(val)
         except: return str(val)
 
@@ -280,7 +298,8 @@ class TablemanExtension(inkex.EffectExtension):
 
                 fmt = cs.get('format', 'auto')
                 decs = int(cs.get('decimals', 2))
-                display_text = self.format_value(ct, fmt, decs)
+                sym = cs.get('currencySymbol')
+                display_text = self.format_value(ct, fmt, decs, sym)
                 
                 font=cs.get('fontFamily') or gf
                 fsize=float(cs.get('fontSize') or gfs)
