@@ -126,12 +126,31 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('cell-height').value = d.cell_height;
             document.getElementById('border-width').value = d.border_width;
             document.getElementById('border-color').value = d.border_color;
-            gHeaderFill.value = d.header_fill; gBodyFill.value = d.body_fill;
+
+            // Fills & Transparency
+            const setFill = (val, input, btnId) => {
+                const btn = document.getElementById(btnId);
+                if (val === 'none') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                    input.value = val;
+                }
+            };
+            setFill(d.header_fill, gHeaderFill, 'btn-none-header');
+            setFill(d.body_fill, gBodyFill, 'btn-none-body');
+
+            // Banded Rows
+            const brCheck = document.getElementById('banded-rows');
+            const brColor = document.getElementById('banded-color');
+            brCheck.checked = !!d.banded_rows;
+            setFill(d.banded_color || '#2a2a2a', brColor, 'btn-none-banded');
+
             gFontSize.value = d.font_size; gTextColor.value = d.text_color; gHdrTextColor.value = d.header_text_color;
             await loadFonts(d.font_family);
             window._tableData = d.data || []; merges = d.merges || []; cellStyles = d.cell_styles || [];
             colWidths = d.col_widths || []; rowHeights = d.row_heights || [];
-            showEditor(`Edit: ${d.label.replace(/^Tableman:\s*/, '')}`); buildGrid();
+            showEditor(`Edit: ${d.label}`); buildGrid();
         } catch (e) { alert(e.message); }
     }
 
@@ -221,16 +240,42 @@ document.addEventListener('DOMContentLoaded', () => {
         inner.style.fontStyle = s.italic ? 'italic' : 'normal';
         inner.style.textDecoration = [s.underline ? 'underline' : '', s.strikethrough ? 'line-through' : ''].filter(Boolean).join(' ') || 'none';
 
-        // Alignment on td
-        td.style.textAlign = s.hAlign || 'center';
-        td.style.verticalAlign = s.vAlign || 'middle';
+        // Alignment on td and flex inner
+        const hMap = { 'left': 'flex-start', 'center': 'center', 'right': 'flex-end' };
+        const vMap = { 'top': 'flex-start', 'middle': 'center', 'bottom': 'flex-end' };
+        const ha = s.hAlign || 'center';
+        const va = s.vAlign || 'middle';
+
+        td.style.textAlign = ha;
+        td.style.verticalAlign = va;
+        inner.style.justifyContent = hMap[ha] || 'center';
+        inner.style.alignItems = vMap[va] || 'center';
 
         // Wrap
         inner.style.whiteSpace = s.wrap ? 'normal' : 'nowrap';
         inner.style.wordBreak = s.wrap ? 'break-word' : 'normal';
+        inner.style.textAlign = ha;
 
         // Fill on td
-        td.style.backgroundColor = s.fillColor || (isH ? gHeaderFill.value : gBodyFill.value);
+        let fill = s.fillColor;
+        if (!fill) {
+            const isBanded = document.getElementById('banded-rows').checked;
+            const bColor = document.getElementById('banded-color').value;
+            const bNone = document.getElementById('btn-none-banded').classList.contains('active');
+
+            if (isH) {
+                fill = document.getElementById('btn-none-header').classList.contains('active') ? 'none' : gHeaderFill.value;
+            } else {
+                const bodyNone = document.getElementById('btn-none-body').classList.contains('active');
+                if (isBanded && r % 2 === 0) {
+                    fill = bNone ? 'none' : bColor;
+                } else {
+                    fill = bodyNone ? 'none' : gBodyFill.value;
+                }
+            }
+        }
+        td.style.backgroundColor = (fill === 'none') ? 'transparent' : fill;
+        if (fill === 'none') td.dataset.fillNone = 'true'; else delete td.dataset.fillNone;
 
         // Rotation on inner div — like Google Sheets
         const rot = String(s.rotation || 0);
@@ -279,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── RESIZE HANDLES ──────────────────────────────────────
     function addResizeHandles() {
         document.querySelectorAll('.col-resize-handle,.row-resize-handle').forEach(h => h.remove());
-        const wrapper = document.querySelector('.grid-wrapper');
+        const wrapper = document.getElementById('grid-inner-rel');
         const cols = parseInt(tableColsInput.value) || 3, rows = parseInt(tableRowsInput.value) || 3;
 
         let xOff = 0;
@@ -410,9 +455,25 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDD('dd-rotation', 'rotation', v => v === 'stack' ? 'stack' : parseFloat(v));
     document.addEventListener('click', () => document.querySelectorAll('.tb-dropdown.open').forEach(d => d.classList.remove('open')));
 
-    [gFont, gFontSize, gTextColor, gHdrTextColor, gHeaderFill, gBodyFill].forEach(el => {
-        el.addEventListener('input', refreshAll); el.addEventListener('change', refreshAll);
-    });
+    [gFont, gFontSize, gTextColor, gHdrTextColor, gHeaderFill, gBodyFill,
+        document.getElementById('banded-rows'), document.getElementById('banded-color'),
+        document.getElementById('header-fill'), document.getElementById('body-fill')].forEach(el => {
+            if (!el) return;
+            el.addEventListener('input', refreshAll); el.addEventListener('change', refreshAll);
+        });
+
+    // None (Transparent) Toggles
+    function setupNone(btnId, colorId) {
+        const btn = document.getElementById(btnId);
+        const color = document.getElementById(colorId);
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            refreshAll();
+        });
+    }
+    setupNone('btn-none-header', 'header-fill');
+    setupNone('btn-none-body', 'body-fill');
+    setupNone('btn-none-banded', 'banded-color');
     function refreshAll() {
         contentGrid.querySelectorAll('td').forEach(td => {
             const inner = td.querySelector('.cell-inner');
@@ -450,7 +511,10 @@ document.addEventListener('DOMContentLoaded', () => {
             col_widths: colWidths, row_heights: rowHeights,
             border_width: parseFloat(document.getElementById('border-width').value),
             border_color: document.getElementById('border-color').value,
-            header_fill: gHeaderFill.value, body_fill: gBodyFill.value,
+            header_fill: document.getElementById('btn-none-header').classList.contains('active') ? 'none' : gHeaderFill.value,
+            body_fill: document.getElementById('btn-none-body').classList.contains('active') ? 'none' : gBodyFill.value,
+            banded_rows: document.getElementById('banded-rows').checked,
+            banded_color: document.getElementById('btn-none-banded').classList.contains('active') ? 'none' : document.getElementById('banded-color').value,
             font_family: gFont.value, font_size: parseFloat(gFontSize.value),
             text_color: gTextColor.value, header_text_color: gHdrTextColor.value,
             data: window._tableData, merges, cell_styles: cellStyles

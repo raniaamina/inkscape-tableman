@@ -76,27 +76,52 @@
                     </div>
 
                     <div class="form-section-title">Table Style</div>
-                    <div class="form-group row-group color-row">
-                        <div class="color-group"><label>Header:</label><input type="color" id="header-fill"
-                                value="#bb86fc" class="color-swatch"></div>
-                        <div class="color-group"><label>Body:</label><input type="color" id="body-fill" value="#1e1e1e"
-                                class="color-swatch"></div>
-                        <div class="color-group"><label>Border:</label><input type="color" id="border-color"
-                                value="#333333" class="color-swatch"></div>
-                        <div class="form-group flex-1"><label>Border W:</label><input type="number" id="border-width"
-                                value="1" min="0" step="0.5"></div>
+                    <div class="style-grid-4">
+                        <div class="color-group"><label>Header:</label>
+                            <div class="color-input-wrap">
+                                <input type="color" id="header-fill" value="#bb86fc" class="color-swatch">
+                                <button type="button" class="btn-none" id="btn-none-header" title="No Fill">×</button>
+                            </div>
+                        </div>
+                        <div class="color-group"><label>Body:</label>
+                            <div class="color-input-wrap">
+                                <input type="color" id="body-fill" value="#1e1e1e" class="color-swatch">
+                                <button type="button" class="btn-none" id="btn-none-body" title="No Fill">×</button>
+                            </div>
+                        </div>
+                        <div class="color-group"><label>Border:</label>
+                            <input type="color" id="border-color" value="#333333" class="color-swatch">
+                        </div>
+                        <div class="form-group"><label>Border W:</label><input type="number" id="border-width" value="1"
+                                min="0" step="0.5"></div>
+                    </div>
+
+                    <div class="form-section-title">Banded Rows</div>
+                    <div class="style-grid-4">
+                        <div class="form-group" style="grid-column:span 2">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="banded-rows"> Enable alternating row colors
+                            </label>
+                        </div>
+                        <div class="color-group"><label>Alt Color:</label>
+                            <div class="color-input-wrap">
+                                <input type="color" id="banded-color" value="#2a2a2a" class="color-swatch">
+                                <button type="button" class="btn-none" id="btn-none-banded" title="No Fill">×</button>
+                            </div>
+                        </div>
+                        <div></div>
                     </div>
 
                     <div class="form-section-title">Default Text</div>
-                    <div class="form-group row-group text-style-row">
-                        <div class="form-group" style="flex:2"><label>Font:</label><select id="font-family">
+                    <div class="style-grid-4">
+                        <div class="form-group"><label>Font:</label><select id="font-family">
                                 <option>Loading...</option>
                             </select></div>
-                        <div class="form-group" style="flex:1"><label>Size:</label><input type="number" id="font-size"
-                                value="14" min="6" max="72"></div>
-                        <div class="color-group"><label>Text:</label><input type="color" id="text-color" value="#ffffff"
-                                class="color-swatch"></div>
-                        <div class="color-group"><label>Hdr:</label><input type="color" id="header-text-color"
+                        <div class="form-group"><label>Size:</label><input type="number" id="font-size" value="14"
+                                min="6" max="72"></div>
+                        <div class="color-group"><label>Text Color:</label><input type="color" id="text-color"
+                                value="#ffffff" class="color-swatch"></div>
+                        <div class="color-group"><label>Hdr Color:</label><input type="color" id="header-text-color"
                                 value="#000000" class="color-swatch"></div>
                     </div>
                 </div>
@@ -292,9 +317,11 @@
 
                     <!-- Grid -->
                     <div class="grid-wrapper">
-                        <table id="content-grid" class="content-grid">
-                            <tbody></tbody>
-                        </table>
+                        <div class="grid-inner-rel" id="grid-inner-rel">
+                            <table id="content-grid" class="content-grid">
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <div class="merge-hint">

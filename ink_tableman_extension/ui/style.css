@@ -326,13 +326,14 @@ input[type="text"],
 input[type="number"],
 select {
     width: 100%;
-    padding: 5px 8px;
+    padding: 10px 12px;
     border-radius: var(--r);
     border: 1px solid var(--border);
     background: var(--bg-panel);
     color: var(--text);
     font-family: var(--ff);
-    font-size: .83rem
+    font-size: .88rem;
+    height: 40px;
 }
 
 select {
@@ -342,7 +343,7 @@ select {
     background-repeat: no-repeat;
     background-position: right 6px center;
     background-size: 14px;
-    padding-right: 22px
+    padding-right: 22px;
 }
 
 option {
@@ -357,30 +358,94 @@ select:focus {
     background: rgba(255, 255, 255, .08)
 }
 
-.color-row {
-    align-items: flex-end
+/* 4-column grid for style sections */
+.style-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 .color-group {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+}
+
+.color-input-wrap {
+    display: flex;
     align-items: center;
-    gap: 2px;
-    min-width: 36px
+    gap: 4px;
+    width: 100%;
 }
 
 .color-swatch {
-    width: 28px;
-    height: 28px;
+    width: 100%;
+    /* Full width when not in flex-wrapper */
+    height: 38px;
     padding: 1px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: transparent;
-    cursor: pointer
+    cursor: pointer;
 }
 
-.text-style-row {
-    align-items: flex-end
+.color-input-wrap .color-swatch {
+    flex: 3;
+    /* 75% width inside wrapper */
+}
+
+.btn-none {
+    flex: 1;
+    /* 25% width inside wrapper */
+    height: 38px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-m);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+}
+
+.btn-none:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn-none.active {
+    border-color: var(--accent);
+    background: rgba(187, 134, 252, 0.1);
+    color: var(--accent);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .82rem;
+    color: var(--text-m);
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
 }
 
 /* ═══ RICH TOOLBAR ═══ */
@@ -455,17 +520,18 @@ select:focus {
 
 /* Font select in toolbar */
 .tb-font {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     max-width: 130px;
     min-width: 80px;
-    padding: 4px 20px 4px 6px;
+    padding: 4px 6px;
     font-size: .78rem;
     height: 34px;
     border-radius: 4px;
     border: 1px solid var(--border);
     background: var(--bg-card);
     color: var(--text);
-    -webkit-appearance: none;
-    appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 4px center;
@@ -638,6 +704,12 @@ select:focus {
     position: relative;
 }
 
+.grid-inner-rel {
+    position: relative;
+    display: inline-block;
+    min-width: 100%;
+}
+
 .content-grid {
     border-collapse: collapse;
     font-size: .85rem;
@@ -742,17 +814,27 @@ button {
 }
 
 .btn-small {
-    padding: 4px 10px;
-    font-size: .76rem;
-    background: var(--bg-card);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--r);
-    cursor: pointer
+    padding: 6px 16px;
+    font-size: .88rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .2s;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+
+.btn-danger {
+    border-color: #ff5555;
+    color: #ff5555;
 }
 
 .btn-small:hover {
-    border-color: var(--accent)
+    background: rgba(187, 134, 252, .1);
+}
+
+.btn-danger:hover {
+    background: rgba(255, 85, 85, .1);
 }
 
 .btn-edit {

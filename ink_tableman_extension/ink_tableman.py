@@ -133,6 +133,8 @@ class TablemanExtension(inkex.EffectExtension):
             'border_color':e.get(f'{{{TABLEMAN_NS}}}border-color','#333333'),
             'header_fill':e.get(f'{{{TABLEMAN_NS}}}header-fill','#bb86fc'),
             'body_fill':e.get(f'{{{TABLEMAN_NS}}}body-fill','#1e1e1e'),
+            'banded_rows':e.get(f'{{{TABLEMAN_NS}}}banded-rows','0')=='1',
+            'banded_color':e.get(f'{{{TABLEMAN_NS}}}banded-color','#2a2a2a'),
             'font_family':e.get(f'{{{TABLEMAN_NS}}}font-family','sans-serif'),
             'font_size':float(e.get(f'{{{TABLEMAN_NS}}}font-size','14')),
             'text_color':e.get(f'{{{TABLEMAN_NS}}}text-color','#ffffff'),
@@ -173,6 +175,8 @@ class TablemanExtension(inkex.EffectExtension):
         bc=data.get('border_color','#333333')
         hfill=data.get('header_fill','#bb86fc')
         bfill=data.get('body_fill','#1e1e1e')
+        is_banded=data.get('banded_rows',False)
+        banded_color=data.get('banded_color','#2a2a2a')
         gf=data.get('font_family','sans-serif')
         gfs=float(data.get('font_size',14))
         gtc=data.get('text_color','#ffffff')
@@ -203,11 +207,24 @@ class TablemanExtension(inkex.EffectExtension):
                 if r<len(csty) and c<len(csty[r]):
                     cs=csty[r][c] if isinstance(csty[r][c],dict) else {}
 
-                fill=cs.get('fillColor') or (hfill if isH else bfill)
+                fill = cs.get('fillColor')
+                if not fill:
+                    if isH:
+                        fill = hfill
+                    else:
+                        if is_banded and r % 2 == 0:
+                            fill = banded_color
+                        else:
+                            fill = bfill
+
                 rect=Rectangle()
                 rect.set('x',str(x));rect.set('y',str(y))
                 rect.set('width',str(cel_w));rect.set('height',str(cel_h))
-                rect.style={'fill':fill,'stroke':bc,'stroke-width':str(bw)}
+                rect.style={'stroke':bc,'stroke-width':str(bw)}
+                if fill and fill != 'none':
+                    rect.style['fill'] = fill
+                else:
+                    rect.style['fill'] = 'none'
                 group.append(rect)
 
                 ct=''
@@ -306,11 +323,13 @@ class TablemanExtension(inkex.EffectExtension):
                 for child in list(group): group.remove(child)
 
             self.status_data.update({"progress":50,"message":"Storing..."})
-            group.set(f'{{{INKSCAPE_LABEL_NS}}}label',f'Tableman: {label}')
+            group.set(f'{{{INKSCAPE_LABEL_NS}}}label',f'{label}')
             for k in ['rows','cols','cell_width','cell_height','border_width',
-                       'border_color','header_fill','body_fill','font_family',
-                       'font_size','text_color','header_text_color']:
-                group.set(f'{{{TABLEMAN_NS}}}{k.replace("_","-")}',str(data.get(k,'')))
+                       'border_color','header_fill','body_fill','banded_rows',
+                       'banded_color','font_family','font_size','text_color','header_text_color']:
+                val=data.get(k,'')
+                if k=='banded_rows': val='1' if val else '0'
+                group.set(f'{{{TABLEMAN_NS}}}{k.replace("_","-")}',str(val))
 
             group.set(f'{{{TABLEMAN_NS}}}data',json.dumps(data.get('data',[])))
             group.set(f'{{{TABLEMAN_NS}}}merges',json.dumps(data.get('merges',[])))
