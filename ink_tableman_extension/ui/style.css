@@ -1,0 +1,243 @@
+:root {
+    --bg-color: #121212;
+    --bg-panel: #1e1e1e;
+    --text-main: #ffffff;
+    --text-muted: #aaaaaa;
+    --accent: #bb86fc;
+    --accent-hover: #9965f4;
+    --border-color: #333333;
+    --danger: #cf6679;
+    --success: #03dac6;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    background-color: var(--bg-panel);
+    border-radius: var(--radius);
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    max-height: 710px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* Anchor for absolute positioning */
+}
+
+header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+
+.form-section {
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.row-group {
+    flex-direction: row;
+    gap: 15px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.mt-15 {
+    margin-top: 15px;
+}
+
+.mt-25 {
+    margin-top: 25px;
+}
+
+label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-panel);
+    /* Use solid color to prevent GTK drawing issues */
+    color: var(--text-main);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Add a custom dropdown arrow */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    padding-right: 30px;
+}
+
+option {
+    background-color: var(--bg-panel);
+    color: var(--text-main);
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 2px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    right: 30px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#status-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--success);
+    transition: width 0.3s ease;
+}
+
+.progress-bar.error {
+    background-color: var(--danger);
+}
+
+.status-message {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}

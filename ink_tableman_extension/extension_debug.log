@@ -1,0 +1,3 @@
+Gtk-Message: 22:09:07.950: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init
+Gtk-Message: 22:09:08.082: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init
+<sys>:0: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/sherlock/Git/ink_tableman/ink_tableman_extension/extension_debug.log' mode='w' encoding='UTF-8'>
