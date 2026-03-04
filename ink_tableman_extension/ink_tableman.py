@@ -219,7 +219,7 @@ class TablemanExtension(inkex.EffectExtension):
                 tcolor=cs.get('textColor') or (ghtc if isH else gtc)
                 halign=cs.get('hAlign','center')
                 valign=cs.get('vAlign','middle')
-                rotation=float(cs.get('rotation',0))
+                rot_val=cs.get('rotation',0)  # can be 'stack' or number
                 wrap=cs.get('wrap',False)
 
                 amap={'left':'start','center':'middle','right':'end'}
@@ -231,12 +231,32 @@ class TablemanExtension(inkex.EffectExtension):
                 ts={'font-size':f'{fsize}px','font-family':font,'fill':tcolor,'text-anchor':tanch}
                 if cs.get('bold'): ts['font-weight']='bold'
                 if cs.get('italic'): ts['font-style']='italic'
-                deco=[x for x in [cs.get('underline') and 'underline',cs.get('strikethrough') and 'line-through'] if x]
+                deco=[v for v in [cs.get('underline') and 'underline',cs.get('strikethrough') and 'line-through'] if v]
                 if deco: ts['text-decoration']=' '.join(deco)
 
                 te=TextElement(); te.style=ts
 
-                if wrap:
+                is_stack = (str(rot_val) == 'stack')
+                rotation = 0 if is_stack else float(rot_val or 0)
+
+                if is_stack:
+                    # Stack vertical: one character per line, centered
+                    chars = list(ct)
+                    total_h = len(chars) * fsize * 1.2
+                    sx = x + cel_w / 2
+                    if valign == 'top':
+                        sy = y + fsize + pad
+                    elif valign == 'bottom':
+                        sy = y + cel_h - total_h + fsize - pad
+                    else:
+                        sy = y + (cel_h - total_h) / 2 + fsize
+                    ts['text-anchor'] = 'middle'
+                    te.style = ts
+                    for i, ch in enumerate(chars):
+                        ts2=Tspan(); ts2.set('x',str(sx))
+                        ts2.set('y',str(sy + i * fsize * 1.2))
+                        ts2.text = ch; te.append(ts2)
+                elif wrap:
                     avg=fsize*0.6; mx=max(1,int((cel_w-2*pad)/avg))
                     words=ct.split(' '); lines=[]; cur=''
                     for w in words:

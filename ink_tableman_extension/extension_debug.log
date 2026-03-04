@@ -1,4 +1,2 @@
-Gtk-Message: 23:17:54.621: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init
-Gtk-Message: 23:17:54.753: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init
-/home/sherlock/Git/ink_tableman/ink_tableman_extension/ink_tableman.py:268: FutureWarning: Truth-testing of elements was a source of confusion and will always return True in future versions. Use specific 'len(elem)' or 'elem is not None' test instead.
-  is_new=not tid or not self.svg.getElementById(tid)
+Gtk-Message: 23:24:17.334: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init
+Gtk-Message: 23:24:17.471: Failed to load module "appmenu-gtk-module": 'gtk_module_display_init': /usr/lib/x86_64-linux-gnu/gtk-3.0/modules/libwindow-decorations-gtk-module.so: undefined symbol: gtk_module_display_init

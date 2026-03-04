@@ -53,14 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function ensureDimArrays() {
-        const rows = parseInt(tableRowsInput.value) || 3;
-        const cols = parseInt(tableColsInput.value) || 3;
+        const rows = parseInt(tableRowsInput.value) || 3, cols = parseInt(tableColsInput.value) || 3;
         const defW = parseFloat(document.getElementById('cell-width').value) || 120;
         const defH = parseFloat(document.getElementById('cell-height').value) || 40;
         while (colWidths.length < cols) colWidths.push(defW);
         while (rowHeights.length < rows) rowHeights.push(defH);
-        colWidths.length = cols;
-        rowHeights.length = rows;
+        colWidths.length = cols; rowHeights.length = rows;
     }
 
     // ─── NAV ─────────────────────────────────────────────────
@@ -154,15 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── BUILD GRID ──────────────────────────────────────────
     function buildGrid() {
-        const rows = parseInt(tableRowsInput.value) || 3;
-        const cols = parseInt(tableColsInput.value) || 3;
+        const rows = parseInt(tableRowsInput.value) || 3, cols = parseInt(tableColsInput.value) || 3;
         const data = window._tableData || [];
-        ensureStyles(rows, cols);
-        ensureDimArrays();
+        ensureStyles(rows, cols); ensureDimArrays();
 
-        // Build colgroup for widths
-        let cg = gridTable.querySelector('colgroup');
-        if (cg) cg.remove();
+        // Build colgroup
+        let cg = gridTable.querySelector('colgroup'); if (cg) cg.remove();
         cg = document.createElement('colgroup');
         for (let c = 0; c < cols; c++) {
             const col = document.createElement('col');
@@ -171,8 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         gridTable.prepend(cg);
 
-        contentGrid.innerHTML = '';
-        clearSel();
+        contentGrid.innerHTML = ''; clearSel();
 
         for (let r = 0; r < rows; r++) {
             const tr = document.createElement('tr');
@@ -180,16 +174,30 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let c = 0; c < cols; c++) {
                 if (isHidden(r, c)) continue;
                 const td = document.createElement('td');
-                td.contentEditable = true; td.dataset.row = r; td.dataset.col = c;
+                td.dataset.row = r; td.dataset.col = c;
 
                 const mg = getMerge(r, c);
                 if (mg) { td.rowSpan = mg.rowspan; td.colSpan = mg.colspan; td.classList.add('merged-cell'); }
-                if (r < data.length && c < data[r].length) td.textContent = data[r][c];
-                else if (r === 0) td.textContent = `Col ${c + 1}`;
 
-                applyCellVisual(td, r, c);
+                // Inner div for rotation support
+                const inner = document.createElement('div');
+                inner.className = 'cell-inner';
+                inner.contentEditable = true;
+
+                if (r < data.length && c < data[r].length) inner.textContent = data[r][c];
+                else if (r === 0) inner.textContent = `Col ${c + 1}`;
+
+                td.appendChild(inner);
+                applyCellVisual(td, inner, r, c);
 
                 td.addEventListener('mousedown', e => {
+                    if (e.target.classList.contains('cell-inner')) return; // let inner handle focus
+                    if (e.shiftKey && selStart) selEnd = { row: r, col: c };
+                    else { selStart = { row: r, col: c }; selEnd = { row: r, col: c }; }
+                    highlightSel(); syncToolbarFromCell(r, c);
+                });
+
+                inner.addEventListener('mousedown', e => {
                     if (e.shiftKey && selStart) selEnd = { row: r, col: c };
                     else { selStart = { row: r, col: c }; selEnd = { row: r, col: c }; }
                     highlightSel(); syncToolbarFromCell(r, c);
@@ -199,114 +207,106 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             contentGrid.appendChild(tr);
         }
-
         addResizeHandles();
     }
 
-    function applyCellVisual(td, r, c) {
+    function applyCellVisual(td, inner, r, c) {
         const s = getCS(r, c); const isH = r === 0;
-        td.style.fontFamily = s.fontFamily || gFont.value;
-        td.style.fontSize = (s.fontSize || gFontSize.value) + 'px';
-        td.style.color = s.textColor || (isH ? gHdrTextColor.value : gTextColor.value);
-        td.style.fontWeight = s.bold ? 'bold' : 'normal';
-        td.style.fontStyle = s.italic ? 'italic' : 'normal';
-        td.style.textDecoration = [s.underline ? 'underline' : '', s.strikethrough ? 'line-through' : ''].filter(Boolean).join(' ') || 'none';
+
+        // Text styles on inner
+        inner.style.fontFamily = s.fontFamily || gFont.value;
+        inner.style.fontSize = (s.fontSize || gFontSize.value) + 'px';
+        inner.style.color = s.textColor || (isH ? gHdrTextColor.value : gTextColor.value);
+        inner.style.fontWeight = s.bold ? 'bold' : 'normal';
+        inner.style.fontStyle = s.italic ? 'italic' : 'normal';
+        inner.style.textDecoration = [s.underline ? 'underline' : '', s.strikethrough ? 'line-through' : ''].filter(Boolean).join(' ') || 'none';
+
+        // Alignment on td
         td.style.textAlign = s.hAlign || 'center';
         td.style.verticalAlign = s.vAlign || 'middle';
-        td.style.whiteSpace = s.wrap ? 'normal' : 'nowrap';
-        td.style.wordBreak = s.wrap ? 'break-word' : 'normal';
 
-        // Rotation — safe preview using writing-mode only
-        const rot = parseFloat(s.rotation || 0);
-        td.style.writingMode = ''; td.style.textOrientation = ''; td.style.transform = '';
-        if (rot === 90 || rot === -90) {
-            td.style.writingMode = 'vertical-rl';
-            td.style.textOrientation = 'mixed';
-            if (rot === -90) td.style.transform = 'rotate(180deg)';
-        } else if (rot === 270) {
-            td.style.writingMode = 'vertical-rl';
-            td.style.textOrientation = 'upright';
-        } else if (rot === 45 || rot === -45) {
-            // Mild tilt — no transform on td (would break layout), show via data attr
-            td.dataset.rotHint = rot + '°';
-        }
+        // Wrap
+        inner.style.whiteSpace = s.wrap ? 'normal' : 'nowrap';
+        inner.style.wordBreak = s.wrap ? 'break-word' : 'normal';
 
+        // Fill on td
         td.style.backgroundColor = s.fillColor || (isH ? gHeaderFill.value : gBodyFill.value);
+
+        // Rotation on inner div — like Google Sheets
+        const rot = String(s.rotation || 0);
+        inner.style.transform = '';
+        inner.style.writingMode = '';
+        inner.style.textOrientation = '';
+        inner.style.display = '';
+        inner.style.width = '';
+        inner.style.lineHeight = '';
+        inner.style.letterSpacing = '';
+        inner.classList.remove('rot-stack');
+
+        if (rot === 'stack') {
+            // Stack vertical: each character on its own line
+            inner.classList.add('rot-stack');
+        } else if (rot === '90') {
+            // Rotate down — text reads top to bottom (like Google Sheets)
+            inner.style.writingMode = 'vertical-rl';
+            inner.style.textOrientation = 'mixed';
+        } else if (rot === '-90') {
+            // Rotate up — text reads bottom to top (like Google Sheets)
+            inner.style.writingMode = 'vertical-rl';
+            inner.style.textOrientation = 'mixed';
+            inner.style.transform = 'rotate(180deg)';
+        } else if (rot === '45') {
+            inner.style.transform = 'rotate(-45deg)';
+            inner.style.display = 'inline-block';
+        } else if (rot === '-45') {
+            inner.style.transform = 'rotate(45deg)';
+            inner.style.display = 'inline-block';
+        }
     }
 
     function collectData() {
         const rows = parseInt(tableRowsInput.value) || 3, cols = parseInt(tableColsInput.value) || 3;
-        const data = []; for (let r = 0; r < rows; r++)data.push(new Array(cols).fill(''));
+        const data = []; for (let r = 0; r < rows; r++) data.push(new Array(cols).fill(''));
         contentGrid.querySelectorAll('td').forEach(td => {
             const r = parseInt(td.dataset.row), c = parseInt(td.dataset.col);
-            if (r < rows && c < cols) data[r][c] = td.textContent;
-        }); return data;
+            const inner = td.querySelector('.cell-inner');
+            if (r < rows && c < cols) data[r][c] = inner ? inner.textContent : td.textContent;
+        });
+        return data;
     }
     function storeData() { window._tableData = collectData(); }
 
     // ─── RESIZE HANDLES ──────────────────────────────────────
-
     function addResizeHandles() {
-        // Remove old handles
         document.querySelectorAll('.col-resize-handle,.row-resize-handle').forEach(h => h.remove());
-
         const wrapper = document.querySelector('.grid-wrapper');
-        const tableRect = gridTable.getBoundingClientRect();
-        const wrapRect = wrapper.getBoundingClientRect();
-        const cols = parseInt(tableColsInput.value) || 3;
-        const rows = parseInt(tableRowsInput.value) || 3;
+        const cols = parseInt(tableColsInput.value) || 3, rows = parseInt(tableRowsInput.value) || 3;
 
-        // Column resize handles (at right edge of each col except last)
         let xOff = 0;
         for (let c = 0; c < cols - 1; c++) {
             xOff += colWidths[c];
-            const handle = document.createElement('div');
-            handle.className = 'col-resize-handle';
-            handle.style.left = (xOff - 2) + 'px';
-            handle.style.top = '0';
-            handle.style.height = gridTable.offsetHeight + 'px';
-            handle.dataset.col = c;
-            wrapper.appendChild(handle);
-
-            handle.addEventListener('mousedown', e => {
-                e.preventDefault();
-                const startX = e.clientX;
-                const startW = colWidths[c];
-                const onMove = ev => {
-                    const delta = ev.clientX - startX;
-                    colWidths[c] = Math.max(30, startW + delta);
-                    buildGrid();
-                };
-                const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
-                document.addEventListener('mousemove', onMove);
-                document.addEventListener('mouseup', onUp);
+            const h = document.createElement('div'); h.className = 'col-resize-handle';
+            h.style.left = (xOff - 2) + 'px'; h.style.top = '0'; h.style.height = gridTable.offsetHeight + 'px';
+            h.dataset.col = c; wrapper.appendChild(h);
+            h.addEventListener('mousedown', e => {
+                e.preventDefault(); const sx = e.clientX, sw = colWidths[c];
+                const mv = ev => { colWidths[c] = Math.max(30, sw + (ev.clientX - sx)); buildGrid(); };
+                const up = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
+                document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
             });
         }
 
-        // Row resize handles (at bottom edge of each row)
         let yOff = 0;
         for (let r = 0; r < rows - 1; r++) {
             yOff += rowHeights[r];
-            const handle = document.createElement('div');
-            handle.className = 'row-resize-handle';
-            handle.style.top = (yOff - 2) + 'px';
-            handle.style.left = '0';
-            handle.style.width = gridTable.offsetWidth + 'px';
-            handle.dataset.row = r;
-            wrapper.appendChild(handle);
-
-            handle.addEventListener('mousedown', e => {
-                e.preventDefault();
-                const startY = e.clientY;
-                const startH = rowHeights[r];
-                const onMove = ev => {
-                    const delta = ev.clientY - startY;
-                    rowHeights[r] = Math.max(20, startH + delta);
-                    buildGrid();
-                };
-                const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
-                document.addEventListener('mousemove', onMove);
-                document.addEventListener('mouseup', onUp);
+            const h = document.createElement('div'); h.className = 'row-resize-handle';
+            h.style.top = (yOff - 2) + 'px'; h.style.left = '0'; h.style.width = gridTable.offsetWidth + 'px';
+            h.dataset.row = r; wrapper.appendChild(h);
+            h.addEventListener('mousedown', e => {
+                e.preventDefault(); const sy = e.clientY, sh = rowHeights[r];
+                const mv = ev => { rowHeights[r] = Math.max(20, sh + (ev.clientY - sy)); buildGrid(); };
+                const up = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
+                document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
             });
         }
     }
@@ -354,12 +354,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyToSel(prop, val) {
         const rng = getRange(); if (!rng) return;
-        const rows = parseInt(tableRowsInput.value), cols = parseInt(tableColsInput.value);
-        ensureStyles(rows, cols);
+        ensureStyles(parseInt(tableRowsInput.value), parseInt(tableColsInput.value));
         for (let r = rng.minR; r <= rng.maxR; r++)
             for (let c = rng.minC; c <= rng.maxC; c++)
                 if (!isHidden(r, c)) cellStyles[r][c][prop] = val;
-        contentGrid.querySelectorAll('td.selected').forEach(td => applyCellVisual(td, parseInt(td.dataset.row), parseInt(td.dataset.col)));
+
+        // Re-apply visuals
+        contentGrid.querySelectorAll('td.selected').forEach(td => {
+            const inner = td.querySelector('.cell-inner');
+            if (inner) applyCellVisual(td, inner, parseInt(td.dataset.row), parseInt(td.dataset.col));
+        });
     }
 
     function toggleSel(prop) {
@@ -403,13 +407,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDD('dd-halign', 'hAlign');
     setupDD('dd-valign', 'vAlign');
     setupDD('dd-wrap', 'wrap', v => v === 'true');
-    setupDD('dd-rotation', 'rotation', v => parseFloat(v));
+    setupDD('dd-rotation', 'rotation', v => v === 'stack' ? 'stack' : parseFloat(v));
     document.addEventListener('click', () => document.querySelectorAll('.tb-dropdown.open').forEach(d => d.classList.remove('open')));
 
     [gFont, gFontSize, gTextColor, gHdrTextColor, gHeaderFill, gBodyFill].forEach(el => {
         el.addEventListener('input', refreshAll); el.addEventListener('change', refreshAll);
     });
-    function refreshAll() { contentGrid.querySelectorAll('td').forEach(td => applyCellVisual(td, parseInt(td.dataset.row), parseInt(td.dataset.col))); }
+    function refreshAll() {
+        contentGrid.querySelectorAll('td').forEach(td => {
+            const inner = td.querySelector('.cell-inner');
+            if (inner) applyCellVisual(td, inner, parseInt(td.dataset.row), parseInt(td.dataset.col));
+        });
+    }
 
     // ─── MERGE/BREAK ─────────────────────────────────────────
     document.getElementById('btn-merge').addEventListener('click', () => {
@@ -419,7 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
         storeData(); merges.push({ row: rng.minR, col: rng.minC, rowspan: rs, colspan: cs }); buildGrid();
     });
     document.getElementById('btn-break').addEventListener('click', () => {
-        if (!selStart) return; const idx = merges.findIndex(m => m.row === selStart.row && m.col === selStart.col);
+        if (!selStart) return;
+        const idx = merges.findIndex(m => m.row === selStart.row && m.col === selStart.col);
         if (idx === -1) return; storeData(); merges.splice(idx, 1); buildGrid();
     });
 
@@ -473,8 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const s = await (await fetch('/status')).json();
                 updateProg(s.progress, s.message, s.status === 'error' ? 'error' : 'normal');
                 if (s.status === 'completed' || s.status === 'error') { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
-            }
-            catch (e) { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
+            } catch (e) { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
         }, 500);
     }
 

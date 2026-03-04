@@ -15,7 +15,7 @@
         <div id="screen-landing">
             <header>
                 <h1>⊞ Tableman</h1>
-                <p>Table Manager for Inkscape</p>
+                <p>Table Manager for Inkscape by Rania Amina</p>
             </header>
             <div id="table-list" class="table-list">
                 <div class="table-list-loading">Scanning SVG for tables...</div>
@@ -242,12 +242,37 @@
                                 <span id="dd-rotation-icon">⟳</span> <small>▾</small>
                             </button>
                             <div class="tb-popup">
-                                <button type="button" class="tb-popup-item active" data-val="0">None (0°)</button>
-                                <button type="button" class="tb-popup-item" data-val="45">Tilt Up (45°)</button>
-                                <button type="button" class="tb-popup-item" data-val="-45">Tilt Down (−45°)</button>
-                                <button type="button" class="tb-popup-item" data-val="90">Vertical (90°)</button>
-                                <button type="button" class="tb-popup-item" data-val="-90">Vertical (−90°)</button>
-                                <button type="button" class="tb-popup-item" data-val="270">Stack Vertical</button>
+                                <button type="button" class="tb-popup-item active" data-val="0">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="2" y="13" font-size="11"
+                                            fill="currentColor">ab</text></svg>
+                                    None
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="45">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="1" y="16" font-size="11"
+                                            fill="currentColor" transform="rotate(-45,9,9)">ab</text></svg>
+                                    Tilt Up
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="-45">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="1" y="10" font-size="11"
+                                            fill="currentColor" transform="rotate(45,9,9)">ab</text></svg>
+                                    Tilt Down
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="-90">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="3" y="16" font-size="11"
+                                            fill="currentColor" transform="rotate(-90,9,9)">ab</text></svg>
+                                    Rotate Up
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="90">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="3" y="16" font-size="11"
+                                            fill="currentColor" transform="rotate(90,9,9)">ab</text></svg>
+                                    Rotate Down
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="stack">
+                                    <svg width="18" height="18" viewBox="0 0 18 18"><text x="6" y="8" font-size="7"
+                                            fill="currentColor">a</text><text x="6" y="16" font-size="7"
+                                            fill="currentColor">b</text></svg>
+                                    Stack Vertical
+                                </button>
                             </div>
                         </div>
 
