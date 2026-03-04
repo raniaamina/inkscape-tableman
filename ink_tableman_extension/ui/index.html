@@ -14,14 +14,12 @@
         <!-- ═══ SCREEN 1: LANDING ═══ -->
         <div id="screen-landing">
             <header>
-                <h1>Tableman</h1>
+                <h1>⊞ Tableman</h1>
                 <p>Table Manager for Inkscape</p>
             </header>
-
             <div id="table-list" class="table-list">
                 <div class="table-list-loading">Scanning SVG for tables...</div>
             </div>
-
             <div class="landing-actions">
                 <button class="btn-primary" id="btn-new-table">+ Create New Table</button>
                 <button class="btn-secondary" id="btn-close-landing">Close</button>
@@ -30,126 +28,244 @@
 
         <!-- ═══ SCREEN 2: EDITOR ═══ -->
         <div id="screen-editor" class="hidden">
-            <header class="editor-header">
-                <button class="btn-back" id="btn-back">←</button>
-                <div>
+            <!-- Top bar: back + title + actions -->
+            <div class="editor-topbar">
+                <div class="editor-topbar-left">
+                    <button class="btn-back" id="btn-back">←</button>
                     <h1 id="editor-title">New Table</h1>
                 </div>
-            </header>
+                <div class="editor-topbar-right">
+                    <button class="btn-save" id="btn-submit" type="button">Save</button>
+                    <button class="btn-cancel" id="btn-cancel-editor" type="button">Cancel</button>
+                </div>
+            </div>
 
-            <!-- Tab Navigation -->
+            <!-- Status (just below topbar when active) -->
+            <div id="status-container" class="hidden">
+                <div class="progress-bar-container">
+                    <div id="progress-bar" class="progress-bar" style="width:0%"></div>
+                </div>
+                <div id="status-message" class="status-message">Ready</div>
+            </div>
+
             <div class="tab-nav">
                 <button class="tab-btn active" data-tab="tab-layout">Table Layout</button>
                 <button class="tab-btn" data-tab="tab-content">Table Content</button>
             </div>
 
             <form id="editor-form">
-                <input type="hidden" id="table-id" name="id" value="">
+                <input type="hidden" id="table-id" value="">
 
                 <!-- ══ TAB: Table Layout ══ -->
                 <div id="tab-layout" class="tab-panel active">
                     <div class="form-group">
                         <label for="table-label">Table Name:</label>
-                        <input type="text" id="table-label" name="label" value="My Table" placeholder="Table name...">
+                        <input type="text" id="table-label" value="My Table">
                     </div>
 
                     <div class="form-section-title">Dimensions</div>
-
                     <div class="form-group row-group">
-                        <div class="form-group flex-1">
-                            <label for="table-rows">Rows:</label>
-                            <input type="number" id="table-rows" name="rows" value="4" min="1" max="50">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label for="table-cols">Columns:</label>
-                            <input type="number" id="table-cols" name="cols" value="4" min="1" max="20">
-                        </div>
-                    </div>
-
-                    <div class="form-group row-group">
-                        <div class="form-group flex-1">
-                            <label for="cell-width">Cell Width (px):</label>
-                            <input type="number" id="cell-width" name="cell_width" value="120" min="30">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label for="cell-height">Cell Height (px):</label>
-                            <input type="number" id="cell-height" name="cell_height" value="40" min="20">
-                        </div>
+                        <div class="form-group flex-1"><label>Rows:</label><input type="number" id="table-rows"
+                                value="4" min="1" max="50"></div>
+                        <div class="form-group flex-1"><label>Cols:</label><input type="number" id="table-cols"
+                                value="4" min="1" max="20"></div>
+                        <div class="form-group flex-1"><label>W (px):</label><input type="number" id="cell-width"
+                                value="120" min="30"></div>
+                        <div class="form-group flex-1"><label>H (px):</label><input type="number" id="cell-height"
+                                value="40" min="20"></div>
                     </div>
 
                     <div class="form-section-title">Table Style</div>
-
                     <div class="form-group row-group color-row">
-                        <div class="color-group">
-                            <label>Header:</label>
-                            <input type="color" id="header-fill" name="header_fill" value="#bb86fc"
-                                class="color-swatch">
-                        </div>
-                        <div class="color-group">
-                            <label>Body:</label>
-                            <input type="color" id="body-fill" name="body_fill" value="#1e1e1e" class="color-swatch">
-                        </div>
-                        <div class="color-group">
-                            <label>Border:</label>
-                            <input type="color" id="border-color" name="border_color" value="#333333"
-                                class="color-swatch">
-                        </div>
-                        <div class="form-group flex-1">
-                            <label for="border-width">Border W:</label>
-                            <input type="number" id="border-width" name="border_width" value="1" min="0" step="0.5">
-                        </div>
+                        <div class="color-group"><label>Header:</label><input type="color" id="header-fill"
+                                value="#bb86fc" class="color-swatch"></div>
+                        <div class="color-group"><label>Body:</label><input type="color" id="body-fill" value="#1e1e1e"
+                                class="color-swatch"></div>
+                        <div class="color-group"><label>Border:</label><input type="color" id="border-color"
+                                value="#333333" class="color-swatch"></div>
+                        <div class="form-group flex-1"><label>Border W:</label><input type="number" id="border-width"
+                                value="1" min="0" step="0.5"></div>
+                    </div>
+
+                    <div class="form-section-title">Default Text</div>
+                    <div class="form-group row-group text-style-row">
+                        <div class="form-group" style="flex:2"><label>Font:</label><select id="font-family">
+                                <option>Loading...</option>
+                            </select></div>
+                        <div class="form-group" style="flex:1"><label>Size:</label><input type="number" id="font-size"
+                                value="14" min="6" max="72"></div>
+                        <div class="color-group"><label>Text:</label><input type="color" id="text-color" value="#ffffff"
+                                class="color-swatch"></div>
+                        <div class="color-group"><label>Hdr:</label><input type="color" id="header-text-color"
+                                value="#000000" class="color-swatch"></div>
                     </div>
                 </div>
 
                 <!-- ══ TAB: Table Content ══ -->
                 <div id="tab-content" class="tab-panel">
 
-                    <div class="form-section-title">Text Style</div>
+                    <!-- ── RICH TOOLBAR (single row, wraps) ── -->
+                    <div class="rich-toolbar" id="rich-toolbar">
+                        <!-- Font -->
+                        <select id="tb-font" class="tb-font" title="Font Family">
+                            <option>Loading...</option>
+                        </select>
 
-                    <div class="form-group row-group text-style-row">
-                        <div class="form-group" style="flex:2">
-                            <label for="font-family">Font:</label>
-                            <select id="font-family" name="font_family">
-                                <option value="sans-serif">Loading...</option>
-                            </select>
+                        <!-- Size -->
+                        <div class="tb-size-group">
+                            <button type="button" class="tb-btn tb-size-dec" title="Decrease">−</button>
+                            <input type="number" id="tb-font-size" class="tb-size-input" value="14" min="6" max="72"
+                                title="Size">
+                            <button type="button" class="tb-btn tb-size-inc" title="Increase">+</button>
                         </div>
-                        <div class="form-group" style="flex:1">
-                            <label for="font-size">Size:</label>
-                            <input type="number" id="font-size" name="font_size" value="14" min="6" max="72">
+
+                        <span class="tb-sep"></span>
+
+                        <!-- Format -->
+                        <button type="button" class="tb-btn" id="tb-bold" title="Bold"><b>B</b></button>
+                        <button type="button" class="tb-btn" id="tb-italic" title="Italic"><i>I</i></button>
+                        <button type="button" class="tb-btn" id="tb-underline" title="Underline"><u>U</u></button>
+                        <button type="button" class="tb-btn" id="tb-strike" title="Strikethrough"><s>S</s></button>
+
+                        <span class="tb-sep"></span>
+
+                        <!-- Text Color -->
+                        <div class="tb-color-wrap" title="Text Color">
+                            <span class="tb-color-label">A</span>
+                            <div class="tb-color-bar" id="tb-text-color-bar" style="background:#ffffff"></div>
+                            <input type="color" id="tb-text-color" class="tb-color-pick" value="#ffffff">
                         </div>
-                        <div class="color-group">
-                            <label>Text:</label>
-                            <input type="color" id="text-color" name="text_color" value="#ffffff" class="color-swatch">
+
+                        <!-- Fill Color -->
+                        <div class="tb-color-wrap" title="Fill Color">
+                            <span class="tb-color-label">⬛</span>
+                            <div class="tb-color-bar" id="tb-fill-color-bar" style="background:#2a2a2a"></div>
+                            <input type="color" id="tb-fill-color" class="tb-color-pick" value="#2a2a2a">
                         </div>
-                        <div class="color-group">
-                            <label>Header:</label>
-                            <input type="color" id="header-text-color" name="header_text_color" value="#000000"
-                                class="color-swatch">
+
+                        <span class="tb-sep"></span>
+
+                        <!-- Horizontal Align (popup) -->
+                        <div class="tb-dropdown" id="dd-halign">
+                            <button type="button" class="tb-btn tb-dd-trigger" title="Horizontal Alignment">
+                                <span id="dd-halign-icon">☰</span> <small>▾</small>
+                            </button>
+                            <div class="tb-popup">
+                                <button type="button" class="tb-popup-item active" data-val="left" title="Left">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <line x1="2" y1="3" x2="14" y2="3" stroke="currentColor" stroke-width="2" />
+                                        <line x1="2" y1="7" x2="10" y2="7" stroke="currentColor" stroke-width="2" />
+                                        <line x1="2" y1="11" x2="12" y2="11" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Left
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="center" title="Center">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <line x1="2" y1="3" x2="14" y2="3" stroke="currentColor" stroke-width="2" />
+                                        <line x1="4" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="2" />
+                                        <line x1="3" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Center
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="right" title="Right">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <line x1="2" y1="3" x2="14" y2="3" stroke="currentColor" stroke-width="2" />
+                                        <line x1="6" y1="7" x2="14" y2="7" stroke="currentColor" stroke-width="2" />
+                                        <line x1="4" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Right
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Vertical Align (popup) -->
+                        <div class="tb-dropdown" id="dd-valign">
+                            <button type="button" class="tb-btn tb-dd-trigger" title="Vertical Alignment">
+                                <span id="dd-valign-icon">⬍</span> <small>▾</small>
+                            </button>
+                            <div class="tb-popup">
+                                <button type="button" class="tb-popup-item" data-val="top" title="Top">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor"
+                                            stroke-width="1" />
+                                        <line x1="4" y1="4" x2="12" y2="4" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Top
+                                </button>
+                                <button type="button" class="tb-popup-item active" data-val="middle" title="Middle">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor"
+                                            stroke-width="1" />
+                                        <line x1="4" y1="8" x2="12" y2="8" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Middle
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="bottom" title="Bottom">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <rect x="1" y="1" width="14" height="14" fill="none" stroke="currentColor"
+                                            stroke-width="1" />
+                                        <line x1="4" y1="12" x2="12" y2="12" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Bottom
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Text Wrap (popup) -->
+                        <div class="tb-dropdown" id="dd-wrap">
+                            <button type="button" class="tb-btn tb-dd-trigger" title="Text Wrap">
+                                <span id="dd-wrap-icon">↵</span> <small>▾</small>
+                            </button>
+                            <div class="tb-popup">
+                                <button type="button" class="tb-popup-item active" data-val="false" title="Overflow">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <line x1="1" y1="8" x2="18" y2="8" stroke="currentColor" stroke-width="2" />
+                                    </svg>
+                                    Overflow
+                                </button>
+                                <button type="button" class="tb-popup-item" data-val="true" title="Wrap">
+                                    <svg width="16" height="16" viewBox="0 0 16 16">
+                                        <polyline points="1,5 13,5 13,8 6,8" fill="none" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <polyline points="8,6 6,8 8,10" fill="none" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <line x1="1" y1="11" x2="9" y2="11" stroke="currentColor" stroke-width="1.5" />
+                                    </svg>
+                                    Wrap
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Rotation (popup) -->
+                        <div class="tb-dropdown" id="dd-rotation">
+                            <button type="button" class="tb-btn tb-dd-trigger" title="Text Rotation">
+                                <span id="dd-rotation-icon">⟳</span> <small>▾</small>
+                            </button>
+                            <div class="tb-popup">
+                                <button type="button" class="tb-popup-item active" data-val="0">None (0°)</button>
+                                <button type="button" class="tb-popup-item" data-val="45">Tilt Up (45°)</button>
+                                <button type="button" class="tb-popup-item" data-val="-45">Tilt Down (−45°)</button>
+                                <button type="button" class="tb-popup-item" data-val="90">Vertical (90°)</button>
+                                <button type="button" class="tb-popup-item" data-val="-90">Vertical (−90°)</button>
+                                <button type="button" class="tb-popup-item" data-val="270">Stack Vertical</button>
+                            </div>
+                        </div>
+
+                        <span class="tb-sep"></span>
+
+                        <!-- Grid actions -->
+                        <button type="button" class="tb-btn" id="btn-add-row" title="Add Row">+R</button>
+                        <button type="button" class="tb-btn" id="btn-remove-row" title="Remove Row">−R</button>
+                        <button type="button" class="tb-btn" id="btn-add-col" title="Add Column">+C</button>
+                        <button type="button" class="tb-btn" id="btn-remove-col" title="Remove Column">−C</button>
+
+                        <span class="tb-sep"></span>
+
+                        <button type="button" class="tb-btn tb-merge" id="btn-merge" title="Merge Cells">⊞</button>
+                        <button type="button" class="tb-btn tb-break" id="btn-break" title="Unmerge">⊟</button>
                     </div>
 
-                    <!-- Text Formatting Toolbar -->
-                    <div class="format-toolbar">
-                        <button type="button" class="fmt-btn" id="fmt-bold" title="Bold"><b>B</b></button>
-                        <button type="button" class="fmt-btn" id="fmt-italic" title="Italic"><i>I</i></button>
-                        <button type="button" class="fmt-btn" id="fmt-underline" title="Underline"><u>U</u></button>
-                        <button type="button" class="fmt-btn" id="fmt-strike" title="Strikethrough"><s>S</s></button>
-                    </div>
-
-                    <div class="form-section-title">Cell Content</div>
-
-                    <div class="grid-toolbar">
-                        <button type="button" class="btn-small" id="btn-add-row">+ Row</button>
-                        <button type="button" class="btn-small" id="btn-remove-row">− Row</button>
-                        <button type="button" class="btn-small" id="btn-add-col">+ Col</button>
-                        <button type="button" class="btn-small" id="btn-remove-col">− Col</button>
-                        <span class="toolbar-separator"></span>
-                        <button type="button" class="btn-small btn-merge" id="btn-merge"
-                            title="Merge selected cells">Merge</button>
-                        <button type="button" class="btn-small btn-break" id="btn-break"
-                            title="Break merged cell">Break</button>
-                    </div>
-
+                    <!-- Grid -->
                     <div class="grid-wrapper">
                         <table id="content-grid" class="content-grid">
                             <tbody></tbody>
@@ -157,25 +273,10 @@
                     </div>
 
                     <div class="merge-hint">
-                        <small>Click cell, Shift+Click to extend selection. Use toolbar to format.</small>
+                        <small>Click to select · Shift+Click to extend · Toolbar applies to selection</small>
                     </div>
-
-                </div>
-
-                <!-- ── Action Buttons ── -->
-                <div class="form-buttons">
-                    <button type="submit" class="btn-primary" id="btn-submit">Save Table</button>
-                    <button type="button" class="btn-secondary" id="btn-cancel-editor">Cancel</button>
                 </div>
             </form>
-
-            <!-- Status -->
-            <div id="status-container" class="hidden">
-                <div class="progress-bar-container">
-                    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
-                </div>
-                <div id="status-message" class="status-message">Ready</div>
-            </div>
         </div>
 
     </div>

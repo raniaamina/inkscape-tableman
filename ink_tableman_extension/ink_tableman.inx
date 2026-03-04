@@ -6,7 +6,7 @@
     <effect needs-live-preview="false">
         <object-type>all</object-type>
         <effects-menu>
-            <submenu name="Table Manager"/>
+            <submenu name="Content Manager"/>
         </effects-menu>
     </effect>
     
