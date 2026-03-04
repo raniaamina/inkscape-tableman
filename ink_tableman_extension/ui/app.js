@@ -55,22 +55,36 @@ document.addEventListener('DOMContentLoaded', () => {
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function formatValue(val, format, decs = 2, symbol = '$') {
-        if (!val || format === 'text' || format === 'auto' && isNaN(val)) return val;
-        const num = parseFloat(val.toString().replace(/[^0-9.-]/g, ''));
+        if (!val || format === 'text') return val;
+        let raw = val.toString().trim();
+        let num;
+
+        // Smart parsing for id-ID (thousands: dot, decimal: comma)
+        if (raw.includes('Rp') || (raw.includes(',') && !raw.includes('.')) || (raw.match(/\./g) || []).length > 1) {
+            const clean = raw.replace(/Rp/g, '').replace(/\./g, '').replace(/,/g, '.').replace(/\s/g, '');
+            num = parseFloat(clean);
+        } else {
+            num = parseFloat(raw.replace(/[^0-9.-]/g, ''));
+        }
+
         if (isNaN(num)) return val;
 
+        const locale = 'id-ID';
+        const cleanIDR = (n, options) => {
+            return new Intl.NumberFormat(locale, options).format(n).replace(/\s/g, '');
+        };
+
         try {
-            const locale = 'id-ID';
             switch (format) {
                 case 'number': return new Intl.NumberFormat(locale, { minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num);
                 case 'percent': return new Intl.NumberFormat(locale, { style: 'percent', minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num / 100);
-                case 'currency': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', minimumFractionDigits: decs }).format(num);
+                case 'currency': return cleanIDR(num, { style: 'currency', currency: 'IDR', minimumFractionDigits: decs });
                 case 'currency_usd': return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: decs }).format(num);
                 case 'currency_eur': return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: decs }).format(num);
                 case 'currency_custom':
                     const n = new Intl.NumberFormat(locale, { minimumFractionDigits: decs, maximumFractionDigits: decs }).format(num);
                     return `${symbol || '$'}${n}`;
-                case 'currency_round': return new Intl.NumberFormat(locale, { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+                case 'currency_round': return cleanIDR(num, { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 });
                 case 'scientific': return num.toExponential(decs);
                 case 'date': return isNaN(Date.parse(val)) ? val : new Intl.DateTimeFormat(locale).format(new Date(val));
                 case 'date_iso': return isNaN(Date.parse(val)) ? val : new Date(val).toISOString().split('T')[0];

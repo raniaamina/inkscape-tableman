@@ -169,12 +169,17 @@ class TablemanExtension(inkex.EffectExtension):
         return {'status':'error','message':'Not found'}
 
     def format_value(self, val, fmt, decs=2, sym=None):
-        if not val or fmt in ['text', 'auto'] or not any(c.isdigit() for c in str(val)):
-            return str(val)
+        if not val or fmt == 'text': return str(val)
+        raw = str(val).strip()
         try:
             import re
-            num_str = re.sub(r'[^0-9.-]', '', str(val))
-            num = float(num_str)
+            # Smart parsing matching JS logic for id-ID and standard formats
+            if 'Rp' in raw or (',' in raw and '.' not in raw) or raw.count('.') > 1:
+                clean = raw.replace('Rp', '').replace('.', '').replace(',', '.').replace(' ', '')
+                num = float(clean)
+            else:
+                num_str = re.sub(r'[^0-9.-]', '', raw)
+                num = float(num_str)
         except: return str(val)
 
         try:
@@ -193,10 +198,11 @@ class TablemanExtension(inkex.EffectExtension):
                 s = "{:,.{decs}f}".format(num, decs=decs)
                 return f"${s}"
             elif fmt == 'currency_eur':
-                s = "{:,.{decs}f}".format(num, decs=decs).replace(',','.').replace('.',',',1) # simplified
-                return f"€{s}"
+                return f"€{fmt_num(num, decs, sep=(',', '.'))}"
             elif fmt == 'currency_custom':
                 return f"{sym or '$'}{fmt_num(num, decs)}"
+            elif fmt == 'currency_round':
+                return f"Rp{fmt_num(num, 0)}"
             elif fmt == 'scientific':
                 return "{:.{decs}e}".format(num, decs=decs)
             elif fmt.startswith('date'):
