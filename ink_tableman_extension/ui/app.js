@@ -577,11 +577,99 @@ document.addEventListener('DOMContentLoaded', () => {
         if (idx === -1) return; storeData(); merges.splice(idx, 1); buildGrid();
     });
 
-    // ─── GRID TOOLBAR ────────────────────────────────────────
-    document.getElementById('btn-add-row').addEventListener('click', () => { storeData(); tableRowsInput.value = parseInt(tableRowsInput.value) + 1; ensureDimArrays(); buildGrid(); });
-    document.getElementById('btn-remove-row').addEventListener('click', () => { if (parseInt(tableRowsInput.value) > 1) { storeData(); tableRowsInput.value = parseInt(tableRowsInput.value) - 1; merges = merges.filter(m => m.row + m.rowspan <= parseInt(tableRowsInput.value) + 1); ensureDimArrays(); buildGrid(); } });
-    document.getElementById('btn-add-col').addEventListener('click', () => { storeData(); tableColsInput.value = parseInt(tableColsInput.value) + 1; ensureDimArrays(); buildGrid(); });
-    document.getElementById('btn-remove-col').addEventListener('click', () => { if (parseInt(tableColsInput.value) > 1) { storeData(); tableColsInput.value = parseInt(tableColsInput.value) - 1; merges = merges.filter(m => m.col + m.colspan <= parseInt(tableColsInput.value) + 1); ensureDimArrays(); buildGrid(); } });
+    // ─── GRID MUTATION ───────────────────────────────────────
+    function insertRow(at) {
+        storeData();
+        const rows = parseInt(tableRowsInput.value), cols = parseInt(tableColsInput.value);
+        if (!window._tableData || !window._tableData.length) window._tableData = collectData();
+        window._tableData.splice(at, 0, new Array(cols).fill(''));
+        cellStyles.splice(at, 0, Array.from({ length: cols }, () => defCS()));
+        rowHeights.splice(at, 0, rowHeights[at] || rowHeights[rowHeights.length - 1] || 40);
+        merges.forEach(m => {
+            if (m.row >= at) m.row++;
+            else if (m.row < at && m.row + m.rowspan > at) m.rowspan++;
+        });
+        tableRowsInput.value = window._tableData.length;
+        buildGrid();
+    }
+
+    function deleteRow(at) {
+        if (parseInt(tableRowsInput.value) <= 1) return;
+        storeData();
+        window._tableData.splice(at, 1);
+        cellStyles.splice(at, 1);
+        rowHeights.splice(at, 1);
+        merges = merges.filter(m => !(m.row === at && m.rowspan === 1)).map(m => {
+            if (m.row > at) m.row--;
+            else if (m.row <= at && m.row + m.rowspan > at) m.rowspan--;
+            return m;
+        }).filter(m => m.rowspan > 0);
+        tableRowsInput.value = window._tableData.length;
+        buildGrid();
+    }
+
+    function insertCol(at) {
+        storeData();
+        const rows = parseInt(tableRowsInput.value), cols = parseInt(tableColsInput.value);
+        if (!window._tableData || !window._tableData.length) window._tableData = collectData();
+        window._tableData.forEach(r => r.splice(at, 0, ''));
+        cellStyles.forEach(r => r.splice(at, 0, defCS()));
+        colWidths.splice(at, 0, colWidths[at] || colWidths[colWidths.length - 1] || 120);
+        merges.forEach(m => {
+            if (m.col >= at) m.col++;
+            else if (m.col < at && m.col + m.colspan > at) m.colspan++;
+        });
+        tableColsInput.value = window._tableData[0].length;
+        buildGrid();
+    }
+
+    function deleteCol(at) {
+        if (parseInt(tableColsInput.value) <= 1) return;
+        storeData();
+        window._tableData.forEach(r => r.splice(at, 1));
+        cellStyles.forEach(r => r.splice(at, 1));
+        colWidths.splice(at, 1);
+        merges = merges.filter(m => !(m.col === at && m.colspan === 1)).map(m => {
+            if (m.col > at) m.col--;
+            else if (m.col <= at && m.col + m.colspan > at) m.colspan--;
+            return m;
+        }).filter(m => m.colspan > 0);
+        tableColsInput.value = window._tableData[0].length;
+        buildGrid();
+    }
+
+    function setupGridDD(id, type) {
+        const dd = document.getElementById(id);
+        if (!dd) return;
+        dd.querySelector('.tb-dd-trigger').addEventListener('click', e => {
+            e.stopPropagation();
+            document.querySelectorAll('.tb-dropdown.open').forEach(d => { if (d !== dd) d.classList.remove('open'); });
+            dd.classList.toggle('open');
+        });
+        dd.querySelectorAll('.tb-popup-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const val = item.dataset.val;
+                const r = selStart ? selStart.row : 0;
+                const c = selStart ? selStart.col : 0;
+                if (type === 'row') {
+                    if (val === 'above') insertRow(r);
+                    else if (val === 'below') insertRow(r + 1);
+                    else if (val === 'start') insertRow(0);
+                    else if (val === 'end') insertRow(parseInt(tableRowsInput.value));
+                    else if (val === 'delete') deleteRow(r);
+                } else {
+                    if (val === 'left') insertCol(c);
+                    else if (val === 'right') insertCol(c + 1);
+                    else if (val === 'start') insertCol(0);
+                    else if (val === 'end') insertCol(parseInt(tableColsInput.value));
+                    else if (val === 'delete') deleteCol(c);
+                }
+                dd.classList.remove('open');
+            });
+        });
+    }
+    setupGridDD('dd-row-actions', 'row');
+    setupGridDD('dd-col-actions', 'col');
 
     // ─── SUBMIT ──────────────────────────────────────────────
     document.getElementById('btn-submit').addEventListener('click', async () => {

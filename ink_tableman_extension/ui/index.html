@@ -166,34 +166,48 @@
                 <div id="tab-content" class="tab-panel">
 
                     <!-- ── RICH TOOLBAR (single row, wraps) ── -->
-                                        <div class="rich-toolbar" id="rich-toolbar">
+                    <div class="rich-toolbar" id="rich-toolbar">
                         <!-- Group 1: Number Formats -->
                         <div class="tb-group">
-                            <button type="button" class="tb-btn" id="btn-fmt-currency" title="Format Currency (Rp)">$</button>
-                            <button type="button" class="tb-btn" id="btn-fmt-percent" title="Format Percent (%)">%</button>
-                            <button type="button" class="tb-btn" id="btn-fmt-dec-less" title="Decrease decimals">.0<small>←</small></button>
-                            <button type="button" class="tb-btn" id="btn-fmt-dec-more" title="Increase decimals">.00<small>→</small></button>
+                            <button type="button" class="tb-btn" id="btn-fmt-currency"
+                                title="Format Currency (Rp)">$</button>
+                            <button type="button" class="tb-btn" id="btn-fmt-percent"
+                                title="Format Percent (%)">%</button>
+                            <button type="button" class="tb-btn" id="btn-fmt-dec-less"
+                                title="Decrease decimals">.0<small>←</small></button>
+                            <button type="button" class="tb-btn" id="btn-fmt-dec-more"
+                                title="Increase decimals">.00<small>→</small></button>
                             <div class="tb-dropdown" id="dd-number-format">
                                 <button type="button" class="tb-btn tb-dd-trigger" title="More Formats">
                                     <span>123</span> <small>▾</small>
                                 </button>
                                 <div class="tb-popup">
-                                    <button type="button" class="tb-popup-item active" data-val="auto">Automatic</button>
+                                    <button type="button" class="tb-popup-item active"
+                                        data-val="auto">Automatic</button>
                                     <button type="button" class="tb-popup-item" data-val="text">Plain Text</button>
                                     <div class="tb-sep-h"></div>
                                     <button type="button" class="tb-popup-item" data-val="number">Number</button>
                                     <button type="button" class="tb-popup-item" data-val="percent">Percent</button>
-                                    <button type="button" class="tb-popup-item" data-val="scientific">Scientific</button>
+                                    <button type="button" class="tb-popup-item"
+                                        data-val="scientific">Scientific</button>
                                     <div class="tb-sep-h"></div>
-                                    <button type="button" class="tb-popup-item" data-val="currency">Currency (Rp)</button>
-                                    <button type="button" class="tb-popup-item" data-val="currency_usd">Currency ($)</button>
-                                    <button type="button" class="tb-popup-item" data-val="currency_eur">Currency (€)</button>
-                                    <button type="button" class="tb-popup-item" data-val="currency_custom">Custom Currency...</button>
+                                    <button type="button" class="tb-popup-item" data-val="currency">Currency
+                                        (Rp)</button>
+                                    <button type="button" class="tb-popup-item" data-val="currency_usd">Currency
+                                        ($)</button>
+                                    <button type="button" class="tb-popup-item" data-val="currency_eur">Currency
+                                        (€)</button>
+                                    <button type="button" class="tb-popup-item" data-val="currency_custom">Custom
+                                        Currency...</button>
                                     <div class="tb-sep-h"></div>
-                                    <button type="button" class="tb-popup-item" data-val="date">Date (05/03/2024)</button>
-                                    <button type="button" class="tb-popup-item" data-val="date_iso">Date (2024-03-05)</button>
-                                    <button type="button" class="tb-popup-item" data-val="date_us">Date (03/05/2024)</button>
-                                    <button type="button" class="tb-popup-item" data-val="date_long">Date (5 Maret 2024)</button>
+                                    <button type="button" class="tb-popup-item" data-val="date">Date
+                                        (05/03/2024)</button>
+                                    <button type="button" class="tb-popup-item" data-val="date_iso">Date
+                                        (2024-03-05)</button>
+                                    <button type="button" class="tb-popup-item" data-val="date_us">Date
+                                        (03/05/2024)</button>
+                                    <button type="button" class="tb-popup-item" data-val="date_long">Date (5 Maret
+                                        2024)</button>
                                     <button type="button" class="tb-popup-item" data-val="time">Time</button>
                                     <button type="button" class="tb-popup-item" data-val="datetime">Date & Time</button>
                                 </div>
@@ -207,7 +221,8 @@
                             </select>
                             <div class="tb-size-group">
                                 <button type="button" class="tb-btn tb-size-dec" title="Decrease">−</button>
-                                <input type="number" id="tb-font-size" class="tb-size-input" value="14" min="6" max="72" title="Size">
+                                <input type="number" id="tb-font-size" class="tb-size-input" value="14" min="6" max="72"
+                                    title="Size">
                                 <button type="button" class="tb-btn tb-size-inc" title="Increase">+</button>
                             </div>
                         </div>
@@ -237,7 +252,8 @@
                         <!-- Group 5: Alignment & Rotation -->
                         <div class="tb-group">
                             <div class="tb-dropdown" id="dd-halign">
-                                <button type="button" class="tb-btn tb-dd-trigger" title="Horizontal Align"><span id="dd-halign-icon">☰</span> <small>▾</small></button>
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Horizontal Align"><span
+                                        id="dd-halign-icon">☰</span> <small>▾</small></button>
                                 <div class="tb-popup">
                                     <button type="button" class="tb-popup-item active" data-val="left">Left</button>
                                     <button type="button" class="tb-popup-item" data-val="center">Center</button>
@@ -245,7 +261,8 @@
                                 </div>
                             </div>
                             <div class="tb-dropdown" id="dd-valign">
-                                <button type="button" class="tb-btn tb-dd-trigger" title="Vertical Align"><span id="dd-valign-icon">⬍</span> <small>▾</small></button>
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Vertical Align"><span
+                                        id="dd-valign-icon">⬍</span> <small>▾</small></button>
                                 <div class="tb-popup">
                                     <button type="button" class="tb-popup-item" data-val="top">Top</button>
                                     <button type="button" class="tb-popup-item active" data-val="middle">Middle</button>
@@ -253,14 +270,17 @@
                                 </div>
                             </div>
                             <div class="tb-dropdown" id="dd-wrap">
-                                <button type="button" class="tb-btn tb-dd-trigger" title="Text Wrap"><span id="dd-wrap-icon">↵</span> <small>▾</small></button>
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Text Wrap"><span
+                                        id="dd-wrap-icon">↵</span> <small>▾</small></button>
                                 <div class="tb-popup">
-                                    <button type="button" class="tb-popup-item active" data-val="false">Overflow</button>
+                                    <button type="button" class="tb-popup-item active"
+                                        data-val="false">Overflow</button>
                                     <button type="button" class="tb-popup-item" data-val="true">Wrap</button>
                                 </div>
                             </div>
                             <div class="tb-dropdown" id="dd-rotation">
-                                <button type="button" class="tb-btn tb-dd-trigger" title="Text Rotation"><span id="dd-rotation-icon">⟳</span> <small>▾</small></button>
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Text Rotation"><span
+                                        id="dd-rotation-icon">⟳</span> <small>▾</small></button>
                                 <div class="tb-popup">
                                     <button type="button" class="tb-popup-item active" data-val="0">None</button>
                                     <button type="button" class="tb-popup-item" data-val="45">Tilt Up</button>
@@ -272,22 +292,54 @@
                             </div>
                         </div>
 
-                        <!-- Group 6: Grid Actions -->
+                        <!-- Group 6: Row Actions -->
                         <div class="tb-group">
-                            <button type="button" class="tb-btn" id="btn-add-row" title="Add Row">+R</button>
-                            <button type="button" class="tb-btn" id="btn-remove-row" title="Remove Row">−R</button>
-                            <button type="button" class="tb-btn" id="btn-add-col" title="Add Column">+C</button>
-                            <button type="button" class="tb-btn" id="btn-remove-col" title="Remove Column">−C</button>
+                            <div class="tb-dropdown" id="dd-row-actions">
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Row Actions">
+                                    <span>Row </span> <small>▾</small>
+                                </button>
+                                <div class="tb-popup">
+                                    <button type="button" class="tb-popup-item" data-val="above">Insert Above</button>
+                                    <button type="button" class="tb-popup-item" data-val="below">Insert Below</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item" data-val="start">Insert at
+                                        Start</button>
+                                    <button type="button" class="tb-popup-item" data-val="end">Insert at End</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item text-danger" data-val="delete">Delete
+                                        Row</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Group 7: Merge -->
+                        <!-- Group 7: Column Actions -->
+                        <div class="tb-group">
+                            <div class="tb-dropdown" id="dd-col-actions">
+                                <button type="button" class="tb-btn tb-dd-trigger" title="Column Actions">
+                                    <span>Col </span> <small>▾</small>
+                                </button>
+                                <div class="tb-popup">
+                                    <button type="button" class="tb-popup-item" data-val="left">Insert Left</button>
+                                    <button type="button" class="tb-popup-item" data-val="right">Insert Right</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item" data-val="start">Insert at
+                                        Start</button>
+                                    <button type="button" class="tb-popup-item" data-val="end">Insert at End</button>
+                                    <div class="tb-sep-h"></div>
+                                    <button type="button" class="tb-popup-item text-danger" data-val="delete">Delete
+                                        Column</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 8: Merge -->
                         <div class="tb-group">
                             <button type="button" class="tb-btn tb-merge" id="btn-merge" title="Merge Cells">⊞</button>
                             <button type="button" class="tb-btn tb-break" id="btn-break" title="Unmerge">⊟</button>
                         </div>
                     </div>
 
-<!-- Grid -->
+                    <!-- Grid -->
                     <div class="grid-wrapper">
                         <div class="grid-inner-rel" id="grid-inner-rel">
                             <table id="content-grid" class="content-grid">

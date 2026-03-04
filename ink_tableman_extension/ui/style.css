@@ -858,6 +858,10 @@ select:focus {
     flex-shrink: 0
 }
 
+.text-danger {
+    color: var(--danger) !important;
+}
+
 /* ═══ GRID ═══ */
 .grid-wrapper {
     flex: 1;
