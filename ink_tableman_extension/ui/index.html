@@ -4,90 +4,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Shape Inserter</title>
+    <title>Tableman — Table Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>Basic Shape Inserter</h1>
-            <p>Insert Text, Rectangles, or Ellipses into Inkscape</p>
-        </header>
 
-        <main>
-            <form id="extension-form">
+        <!-- ═══ SCREEN 1: LANDING ═══ -->
+        <div id="screen-landing">
+            <header>
+                <h1>Tableman</h1>
+                <p>Table Manager for Inkscape</p>
+            </header>
 
-                <div class="form-group row-group">
-                    <div class="form-group flex-1">
-                        <label for="shape_type">Shape Type:</label>
-                        <select id="shape_type" name="shape_type">
-                            <option value="text">Custom Text</option>
-                            <option value="rect">Rectangle</option>
-                            <option value="ellipse">Ellipse</option>
-                        </select>
-                    </div>
+            <div id="table-list" class="table-list">
+                <div class="table-list-loading">Scanning SVG for tables...</div>
+            </div>
+
+            <div class="landing-actions">
+                <button class="btn-primary" id="btn-new-table">+ Create New Table</button>
+                <button class="btn-secondary" id="btn-close-landing">Close</button>
+            </div>
+        </div>
+
+        <!-- ═══ SCREEN 2: EDITOR ═══ -->
+        <div id="screen-editor" class="hidden">
+            <header class="editor-header">
+                <button class="btn-back" id="btn-back">←</button>
+                <div>
+                    <h1 id="editor-title">New Table</h1>
                 </div>
+            </header>
 
-                <div id="text-inputs" class="form-section">
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="tab-layout">Table Layout</button>
+                <button class="tab-btn" data-tab="tab-content">Table Content</button>
+            </div>
+
+            <form id="editor-form">
+                <input type="hidden" id="table-id" name="id" value="">
+
+                <!-- ══ TAB: Table Layout ══ -->
+                <div id="tab-layout" class="tab-panel active">
                     <div class="form-group">
-                        <label for="text_content">Text Content:</label>
-                        <input type="text" id="text_content" name="text_content" placeholder="Enter text here...">
+                        <label for="table-label">Table Name:</label>
+                        <input type="text" id="table-label" name="label" value="My Table" placeholder="Table name...">
                     </div>
+
+                    <div class="form-section-title">Dimensions</div>
+
                     <div class="form-group row-group">
                         <div class="form-group flex-1">
-                            <label for="font_size">Font Size (px):</label>
-                            <input type="number" id="font_size" name="font_size" value="24" min="1">
+                            <label for="table-rows">Rows:</label>
+                            <input type="number" id="table-rows" name="rows" value="4" min="1" max="50">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="table-cols">Columns:</label>
+                            <input type="number" id="table-cols" name="cols" value="4" min="1" max="20">
                         </div>
                     </div>
-                </div>
 
-                <div id="dimension-inputs" class="form-section hidden">
                     <div class="form-group row-group">
                         <div class="form-group flex-1">
-                            <label for="width">Width (px):</label>
-                            <input type="number" id="width" name="width" value="100" min="1">
+                            <label for="cell-width">Cell Width (px):</label>
+                            <input type="number" id="cell-width" name="cell_width" value="120" min="30">
                         </div>
                         <div class="form-group flex-1">
-                            <label for="height">Height (px):</label>
-                            <input type="number" id="height" name="height" value="100" min="1">
+                            <label for="cell-height">Cell Height (px):</label>
+                            <input type="number" id="cell-height" name="cell_height" value="40" min="20">
+                        </div>
+                    </div>
+
+                    <div class="form-section-title">Table Style</div>
+
+                    <div class="form-group row-group color-row">
+                        <div class="color-group">
+                            <label>Header:</label>
+                            <input type="color" id="header-fill" name="header_fill" value="#bb86fc"
+                                class="color-swatch">
+                        </div>
+                        <div class="color-group">
+                            <label>Body:</label>
+                            <input type="color" id="body-fill" name="body_fill" value="#1e1e1e" class="color-swatch">
+                        </div>
+                        <div class="color-group">
+                            <label>Border:</label>
+                            <input type="color" id="border-color" name="border_color" value="#333333"
+                                class="color-swatch">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="border-width">Border W:</label>
+                            <input type="number" id="border-width" name="border_width" value="1" min="0" step="0.5">
                         </div>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <div class="form-group row-group align-center">
-                        <div class="form-group flex-1">
-                            <label for="fill_color">Fill Color:</label>
-                            <input type="color" id="fill_color" name="fill_color" value="#bb86fc">
+                <!-- ══ TAB: Table Content ══ -->
+                <div id="tab-content" class="tab-panel">
+
+                    <div class="form-section-title">Text Style</div>
+
+                    <div class="form-group row-group text-style-row">
+                        <div class="form-group" style="flex:2">
+                            <label for="font-family">Font:</label>
+                            <select id="font-family" name="font_family">
+                                <option value="sans-serif">Loading...</option>
+                            </select>
                         </div>
-                        <div class="form-group flex-1">
-                            <label for="stroke_color">Stroke Color:</label>
-                            <input type="color" id="stroke_color" name="stroke_color" value="#ffffff">
+                        <div class="form-group" style="flex:1">
+                            <label for="font-size">Size:</label>
+                            <input type="number" id="font-size" name="font_size" value="14" min="6" max="72">
+                        </div>
+                        <div class="color-group">
+                            <label>Text:</label>
+                            <input type="color" id="text-color" name="text_color" value="#ffffff" class="color-swatch">
+                        </div>
+                        <div class="color-group">
+                            <label>Header:</label>
+                            <input type="color" id="header-text-color" name="header_text_color" value="#000000"
+                                class="color-swatch">
                         </div>
                     </div>
 
-                    <div class="form-group row-group mt-15">
-                        <div class="form-group flex-1">
-                            <label for="stroke_width">Stroke Width (px):</label>
-                            <input type="number" id="stroke_width" name="stroke_width" value="2" min="0" step="0.5">
-                        </div>
+                    <!-- Text Formatting Toolbar -->
+                    <div class="format-toolbar">
+                        <button type="button" class="fmt-btn" id="fmt-bold" title="Bold"><b>B</b></button>
+                        <button type="button" class="fmt-btn" id="fmt-italic" title="Italic"><i>I</i></button>
+                        <button type="button" class="fmt-btn" id="fmt-underline" title="Underline"><u>U</u></button>
+                        <button type="button" class="fmt-btn" id="fmt-strike" title="Strikethrough"><s>S</s></button>
                     </div>
+
+                    <div class="form-section-title">Cell Content</div>
+
+                    <div class="grid-toolbar">
+                        <button type="button" class="btn-small" id="btn-add-row">+ Row</button>
+                        <button type="button" class="btn-small" id="btn-remove-row">− Row</button>
+                        <button type="button" class="btn-small" id="btn-add-col">+ Col</button>
+                        <button type="button" class="btn-small" id="btn-remove-col">− Col</button>
+                        <span class="toolbar-separator"></span>
+                        <button type="button" class="btn-small btn-merge" id="btn-merge"
+                            title="Merge selected cells">Merge</button>
+                        <button type="button" class="btn-small btn-break" id="btn-break"
+                            title="Break merged cell">Break</button>
+                    </div>
+
+                    <div class="grid-wrapper">
+                        <table id="content-grid" class="content-grid">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div class="merge-hint">
+                        <small>Click cell, Shift+Click to extend selection. Use toolbar to format.</small>
+                    </div>
+
                 </div>
 
-                <div class="form-buttons mt-25">
-                    <button type="submit" class="btn-primary" id="btn-submit">Insert into Inkscape</button>
-                    <button type="button" class="btn-secondary" id="btn-cancel">Close</button>
+                <!-- ── Action Buttons ── -->
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary" id="btn-submit">Save Table</button>
+                    <button type="button" class="btn-secondary" id="btn-cancel-editor">Cancel</button>
                 </div>
             </form>
 
+            <!-- Status -->
             <div id="status-container" class="hidden">
                 <div class="progress-bar-container">
                     <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
                 </div>
                 <div id="status-message" class="status-message">Ready</div>
             </div>
-        </main>
+        </div>
+
     </div>
 
     <script src="app.js"></script>
