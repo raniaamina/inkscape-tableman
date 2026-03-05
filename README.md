@@ -1,6 +1,6 @@
 # Inkscape Table Manager (ink_tableman)
 
-Inkscape Table Manager is a powerful and intuitive extension for Inkscape that provides a full graphical user interface (GUI) for creating, editing, and managing tables within your SVG documents. It uses a sleek web-based UI to give you a spreadsheet-like experience directly inside Inkscape.
+Inkscape Table Manager is a simple and intuitive extension for Inkscape that provides a full graphical user interface (GUI) for creating, editing, and managing tables within your SVG documents. It uses a sleek web-based UI to give you a spreadsheet-like experience directly inside Inkscape.
 
 ## Features
 
