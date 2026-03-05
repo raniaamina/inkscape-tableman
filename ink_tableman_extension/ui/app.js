@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressBar = document.getElementById('progress-bar');
     const statusMessage = document.getElementById('status-message');
 
+    const uiBackendSelect = document.getElementById('ui-backend-select');
+
     const gFont = document.getElementById('font-family');
     const gFontSize = document.getElementById('font-size');
     const gTextColor = document.getElementById('text-color');
@@ -747,7 +749,18 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const s = await (await fetch('/status')).json();
                 updateProg(s.progress, s.message, s.status === 'error' ? 'error' : 'normal');
-                if (s.status === 'completed' || s.status === 'error') { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
+                if (s.status === 'completed' || s.status === 'error') {
+                    clearInterval(pollInterval);
+                    document.getElementById('btn-submit').disabled = false;
+
+                    if (s.status === 'completed') {
+                        setTimeout(() => {
+                            fetch('/close').catch(() => { });
+                            window.open('', '_self', '');
+                            window.close();
+                        }, 1000);
+                    }
+                }
             } catch (e) { clearInterval(pollInterval); document.getElementById('btn-submit').disabled = false; }
         }, 500);
     }
@@ -764,6 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const theme = s.theme || 'system';
             themeSelect.value = theme;
             applyTheme(theme);
+
+            if (s.ui_backend) {
+                uiBackendSelect.value = s.ui_backend;
+            }
         } catch (e) { applyTheme('system'); }
     }
 
@@ -774,7 +791,17 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetch('/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ theme: val })
+                body: JSON.stringify({ theme: val, ui_backend: uiBackendSelect.value })
+            });
+        } catch (e) { }
+    });
+
+    uiBackendSelect.addEventListener('change', async () => {
+        try {
+            await fetch('/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ theme: themeSelect.value, ui_backend: uiBackendSelect.value })
             });
         } catch (e) { }
     });
@@ -824,24 +851,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const file = e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = ev => {
-                const data = parseCSV(ev.target.result);
-                if (data.length === 0) return;
-                storeData();
-                const rows = data.length;
-                const cols = Math.max(...data.map(r => r.length));
-                tableRowsInput.value = rows;
-                tableColsInput.value = cols;
-                window._tableData = Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => data[r][c] || ''));
-                cellStyles = []; merges = []; colWidths = []; rowHeights = [];
-                ensureStyles(rows, cols);
-                ensureDimArrays();
-                buildGrid();
-                csvImportInput.value = ''; // Reset for same file re-import
+            reader.onload = evt => {
+                const parsed = parseCSV(evt.target.result);
+                if (parsed.length) {
+                    window._tableData = parsed;
+                    tableRowsInput.value = parsed.length;
+                    tableColsInput.value = parsed[0].length;
+                    merges = [];
+                    cellStyles = [];
+                    colWidths = [];
+                    rowHeights = [];
+                    buildGrid();
+                }
+                csvImportInput.value = '';
             };
             reader.readAsText(file);
         });
     }
+
+    // Heartbeat monitor for browser-based graceful shutdown
+    setInterval(() => {
+        fetch('/heartbeat').catch(() => { });
+    }, 500);
 
     loadFonts(); loadTableList();
 });

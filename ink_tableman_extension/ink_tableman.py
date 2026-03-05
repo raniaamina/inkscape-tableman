@@ -25,6 +25,12 @@ except (ImportError, ValueError):
     except:
         GTK_UI_AVAILABLE = False
 
+try:
+    import webview
+    WEBVIEW_AVAILABLE = True
+except (ImportError, ValueError):
+    WEBVIEW_AVAILABLE = False
+
 log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'extension_debug.log')
 log_file = open(log_path, 'w')
 os.dup2(log_file.fileno(), sys.stderr.fileno())
@@ -92,6 +98,10 @@ class TablemanExtension(inkex.EffectExtension):
 
         def do_GET(self):
             if self.path=='/status': self._json(self.ext.status_data)
+            elif self.path=='/heartbeat':
+                import time
+                self.ext.last_heartbeat = time.time()
+                self._json({"status": "alive"})
             elif self.path=='/tables': self._json({'tables':self.ext.scan_tables()})
             elif self.path.startswith('/table/'):
                 d=self.ext.load_table(urllib.parse.unquote(self.path[7:]))
@@ -112,7 +122,11 @@ class TablemanExtension(inkex.EffectExtension):
                 self._json({'status':'saved'})
             elif self.path=='/close':
                 self._json({'status':'closing'})
-                if GTK_UI_AVAILABLE: GLib.idle_add(Gtk.main_quit)
+                bg = getattr(self.ext, 'active_backend', None)
+                if bg == 'gtk': GLib.idle_add(Gtk.main_quit)
+                elif bg == 'webview':
+                    try: self.ext.webview_window.destroy()
+                    except: pass
 
     def __init__(self):
         super().__init__()
@@ -419,7 +433,12 @@ class TablemanExtension(inkex.EffectExtension):
 
             self.status_data={"status":"completed","progress":100,
                 "message":f"{'Created' if is_new else 'Updated'} '{label}'!"}
-            if GTK_UI_AVAILABLE: time.sleep(0.8); GLib.idle_add(Gtk.main_quit)
+            time.sleep(1.5)
+            bg = getattr(self, 'active_backend', None)
+            if bg == 'gtk': GLib.idle_add(Gtk.main_quit)
+            elif bg == 'webview':
+                try: self.webview_window.destroy()
+                except: pass
         except Exception as ex:
             self.status_data={"status":"error","progress":0,"message":f"Error: {ex}"}
         finally:
@@ -433,15 +452,78 @@ class TablemanExtension(inkex.EffectExtension):
         server=socketserver.TCPServer(("",port),handler)
         t=threading.Thread(target=server.serve_forever); t.daemon=True; t.start()
         url=f"http://localhost:{port}/index.html"
-        if GTK_UI_AVAILABLE:
+
+        settings = load_settings()
+        ui_pref = settings.get('ui_backend', 'auto')
+        
+        use_gtk = False
+        use_webview = False
+        
+        if ui_pref == 'gtk' and GTK_UI_AVAILABLE:
+            use_gtk = True
+        elif ui_pref == 'webview' and WEBVIEW_AVAILABLE:
+            use_webview = True
+        elif ui_pref == 'browser':
+            pass
+        elif ui_pref == 'auto':
+            if GTK_UI_AVAILABLE:
+                use_gtk = True
+            elif WEBVIEW_AVAILABLE:
+                use_webview = True
+
+        if use_gtk:
+            self.active_backend = 'gtk'
             hb=GLib.timeout_add(100,lambda:True)
             GLib.idle_add(self._launch_gtk,url,server)
             Gtk.main(); GLib.source_remove(hb)
+        elif use_webview:
+            self.active_backend = 'webview'
+            self.webview_window = webview.create_window('Tableman — Table Manager', url, width=1100, height=850, resizable=True)
+            webview.start()
+            self.status_data['status'] = 'closed'
         else:
-            webbrowser.open(url)
-            while self.is_processing:
-                import time; time.sleep(0.1)
-        server.server_close()
+            import time
+            import subprocess
+            self.last_heartbeat = time.time()
+            start_time = time.time()
+            
+            app_launched = False
+            self.app_process = None
+            browser_paths = [
+                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+            ]
+            
+            if os.name == 'nt':
+                for b_path in browser_paths:
+                    if os.path.exists(b_path):
+                        try:
+                            self.app_process = subprocess.Popen([b_path, f"--app={url}", "--window-size=1100,850"])
+                            app_launched = True
+                            self.active_backend = 'app'
+                            break
+                        except Exception as e:
+                            with open(log_path, 'a') as f:
+                                f.write(f"Failed to launch browser: {e}\n")
+                            pass
+            
+            if not app_launched:
+                self.active_backend = 'browser'
+                webbrowser.open(url)
+                
+            while self.is_processing or self.status_data.get('status') == 'idle':
+                time.sleep(0.5)
+                if time.time() - self.last_heartbeat > 3.0 and time.time() - start_time > 15.0:
+                    self.status_data['status'] = 'closed'
+                    break
+
+            if app_launched and self.app_process:
+                try: self.app_process.terminate()
+                except: pass
+
+        server.shutdown()
 
     def _launch_gtk(self, url, server):
         w=Gtk.Window(title="Tableman — Table Manager")
