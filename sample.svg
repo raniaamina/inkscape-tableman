@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="sample.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:tableman="http://raniaamina.id/tableman">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.44868494"
+     inkscape:cx="377.77065"
+     inkscape:cy="642.99016"
+     inkscape:window-width="2560"
+     inkscape:window-height="1412"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     showgrid="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1" />
+  <g
+     id="tableman-2b008c8b"
+     transform="matrix(0.30364511,0,0,0.30364511,22.547521,17.069555)"
+     inkscape:label="Tabel Harga Barang"
+     tableman:rows="5"
+     tableman:cols="5"
+     tableman:cell-width="120"
+     tableman:cell-height="40"
+     tableman:border-width="1"
+     tableman:border-color="#333333"
+     tableman:header-fill="#000000"
+     tableman:body-fill="#9a9996"
+     tableman:font-family="sans-serif"
+     tableman:font-size="14"
+     tableman:text-color="#ffffff"
+     tableman:header-text-color="#ffffff"
+     tableman:data="[[&quot;No&quot;, &quot;Items&quot;, &quot;Price&quot;, &quot;Qty&quot;, &quot;Subtotal&quot;], [&quot;1&quot;, &quot;Red Book&quot;, &quot;5000&quot;, &quot;1&quot;, &quot;Rp5.000&quot;], [&quot;2&quot;, &quot;Pencil&quot;, &quot;2000&quot;, &quot;1&quot;, &quot;Rp2.000&quot;], [&quot;3&quot;, &quot;Eraser&quot;, &quot;1000&quot;, &quot;1&quot;, &quot;Rp1.000&quot;], [&quot;Grand Total&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;Rp8.000&quot;]]"
+     tableman:merges="[{&quot;row&quot;: 4, &quot;col&quot;: 0, &quot;rowspan&quot;: 1, &quot;colspan&quot;: 4}]"
+     tableman:cell-styles="[[{&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#9141ac&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#9141ac&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#9141ac&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#9141ac&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#9141ac&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0}], [{&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: true, &quot;italic&quot;: false, &quot;underline&quot;: true, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;currency&quot;, &quot;decimals&quot;: 0, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0}], [{&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;currency&quot;, &quot;decimals&quot;: 0, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0}], [{&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: &quot;#613583&quot;, &quot;fillColor&quot;: &quot;#ffffff&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;currency&quot;, &quot;decimals&quot;: 0, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0}], [{&quot;bold&quot;: true, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#613583&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: 18, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;auto&quot;, &quot;decimals&quot;: 2, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: true, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: &quot;#613583&quot;, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: 18, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0, &quot;format&quot;: &quot;currency&quot;, &quot;decimals&quot;: 0, &quot;currencySymbol&quot;: null}, {&quot;bold&quot;: false, &quot;italic&quot;: false, &quot;underline&quot;: false, &quot;strikethrough&quot;: false, &quot;textColor&quot;: null, &quot;fillColor&quot;: null, &quot;fontFamily&quot;: null, &quot;fontSize&quot;: null, &quot;hAlign&quot;: &quot;center&quot;, &quot;vAlign&quot;: &quot;middle&quot;, &quot;wrap&quot;: false, &quot;rotation&quot;: 0}]]"
+     tableman:col-widths="[58, 120, 120, 120, 120]"
+     tableman:row-heights="[40, 40, 40, 40, 40]"
+     tableman:banded-rows="0"
+     tableman:banded-color="#2a2a2a">
+    <rect
+       x="0"
+       y="0"
+       width="58"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#9141ac"
+       id="rect1" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="29.0"
+       y="24.666666666666668"
+       id="text1"><tspan
+         id="tspan1">No</tspan></text>
+    <rect
+       x="58"
+       y="0"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#9141ac"
+       id="rect2" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="118.0"
+       y="24.666666666666668"
+       id="text2"><tspan
+         id="tspan2">Items</tspan></text>
+    <rect
+       x="178"
+       y="0"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#9141ac"
+       id="rect3" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="238.0"
+       y="24.666666666666668"
+       id="text3"><tspan
+         id="tspan3">Price</tspan></text>
+    <rect
+       x="298"
+       y="0"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#9141ac"
+       id="rect4" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="358.0"
+       y="24.666666666666668"
+       id="text4"><tspan
+         id="tspan4">Qty</tspan></text>
+    <rect
+       x="418"
+       y="0"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#9141ac"
+       id="rect5" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="478.0"
+       y="24.666666666666668"
+       id="text5"><tspan
+         id="tspan5">Subtotal</tspan></text>
+    <rect
+       x="0"
+       y="40"
+       width="58"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect6" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="29.0"
+       y="64.66666666666667"
+       id="text6"><tspan
+         id="tspan6">1</tspan></text>
+    <rect
+       x="58"
+       y="40"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect7" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;font-weight:bold;text-anchor:middle;text-decoration-style:solid;text-decoration-color:currentcolor;text-decoration-line:underline"
+       x="118.0"
+       y="64.66666666666667"
+       id="text7"><tspan
+         id="tspan7">Red Book</tspan></text>
+    <rect
+       x="178"
+       y="40"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect8" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="238.0"
+       y="64.66666666666667"
+       id="text8"><tspan
+         id="tspan8">5000</tspan></text>
+    <rect
+       x="298"
+       y="40"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect9" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="358.0"
+       y="64.66666666666667"
+       id="text9"><tspan
+         id="tspan9">1</tspan></text>
+    <rect
+       x="418"
+       y="40"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect10" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="478.0"
+       y="64.66666666666667"
+       id="text10"><tspan
+         id="tspan10">Rp5.000</tspan></text>
+    <rect
+       x="0"
+       y="80"
+       width="58"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect11" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="29.0"
+       y="104.66666666666667"
+       id="text11"><tspan
+         id="tspan11">2</tspan></text>
+    <rect
+       x="58"
+       y="80"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect12" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="118.0"
+       y="104.66666666666667"
+       id="text12"><tspan
+         id="tspan12">Pencil</tspan></text>
+    <rect
+       x="178"
+       y="80"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect13" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="238.0"
+       y="104.66666666666667"
+       id="text13"><tspan
+         id="tspan13">2000</tspan></text>
+    <rect
+       x="298"
+       y="80"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect14" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="358.0"
+       y="104.66666666666667"
+       id="text14"><tspan
+         id="tspan14">1</tspan></text>
+    <rect
+       x="418"
+       y="80"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect15" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="478.0"
+       y="104.66666666666667"
+       id="text15"><tspan
+         id="tspan15">Rp2.000</tspan></text>
+    <rect
+       x="0"
+       y="120"
+       width="58"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect16" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="29.0"
+       y="144.66666666666666"
+       id="text16"><tspan
+         id="tspan16">3</tspan></text>
+    <rect
+       x="58"
+       y="120"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect17" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="118.0"
+       y="144.66666666666666"
+       id="text17"><tspan
+         id="tspan17">Eraser</tspan></text>
+    <rect
+       x="178"
+       y="120"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect18" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="238.0"
+       y="144.66666666666666"
+       id="text18"><tspan
+         id="tspan18">1000</tspan></text>
+    <rect
+       x="298"
+       y="120"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect19" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="358.0"
+       y="144.66666666666666"
+       id="text19"><tspan
+         id="tspan19">1</tspan></text>
+    <rect
+       x="418"
+       y="120"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#ffffff"
+       id="rect20" />
+    <text
+       style="fill:#613583;font-family:sans-serif;font-size:14.0px;text-anchor:middle"
+       x="478.0"
+       y="144.66666666666666"
+       id="text20"><tspan
+         id="tspan20">Rp1.000</tspan></text>
+    <rect
+       x="0"
+       y="160"
+       width="418"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#613583"
+       id="rect21" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:18.0px;font-weight:bold;text-anchor:middle"
+       x="209.0"
+       y="186.0"
+       id="text21"><tspan
+         id="tspan21">Grand Total</tspan></text>
+    <rect
+       x="418"
+       y="160"
+       width="120"
+       height="40"
+       style="stroke:#333333;stroke-width:1.0;fill:#613583"
+       id="rect22" />
+    <text
+       style="fill:#ffffff;font-family:sans-serif;font-size:18.0px;font-weight:bold;text-anchor:middle"
+       x="478.0"
+       y="186.0"
+       id="text22"><tspan
+         id="tspan22">Rp8.000</tspan></text>
+  </g>
+</svg>
