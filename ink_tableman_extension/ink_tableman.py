@@ -471,57 +471,70 @@ class TablemanExtension(inkex.EffectExtension):
             elif WEBVIEW_AVAILABLE:
                 use_webview = True
 
+        launched = False
         if use_gtk:
-            self.active_backend = 'gtk'
-            hb=GLib.timeout_add(100,lambda:True)
-            GLib.idle_add(self._launch_gtk,url,server)
-            Gtk.main(); GLib.source_remove(hb)
-        elif use_webview:
-            self.active_backend = 'webview'
-            self.webview_window = webview.create_window('Tableman — Table Manager', url, width=1100, height=850, resizable=True)
-            webview.start()
-            self.status_data['status'] = 'closed'
-        else:
-            import time
-            import subprocess
-            self.last_heartbeat = time.time()
-            start_time = time.time()
-            
-            app_launched = False
-            self.app_process = None
-            browser_paths = [
-                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
-                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-                r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            ]
-            
-            if os.name == 'nt':
-                for b_path in browser_paths:
-                    if os.path.exists(b_path):
-                        try:
-                            self.app_process = subprocess.Popen([b_path, f"--app={url}", "--window-size=1100,850"])
-                            app_launched = True
-                            self.active_backend = 'app'
-                            break
-                        except Exception as e:
-                            with open(log_path, 'a') as f:
-                                f.write(f"Failed to launch browser: {e}\n")
-                            pass
-            
-            if not app_launched:
-                self.active_backend = 'browser'
-                webbrowser.open(url)
+            try:
+                # Proactive check: AppImage environments often import WebView but crash on instantiation
+                # due to GLIBC/library mismatches.
+                _test_wv = WebKit2.WebView()
+                self.active_backend = 'gtk'
+                hb=GLib.timeout_add(100,lambda:True)
+                GLib.idle_add(self._launch_gtk,url,server)
+                Gtk.main(); GLib.source_remove(hb)
+                launched = True
+            except Exception as e:
+                with open(log_path, 'a') as f:
+                    f.write(f"GTK/WebKit failed at runtime (likely AppImage conflict): {e}\n")
+                use_gtk = False
+                # Fall through to browser fallback
+        
+        if not launched:
+            if use_webview:
+                self.active_backend = 'webview'
+                self.webview_window = webview.create_window('Tableman — Table Manager', url, width=1100, height=850, resizable=True)
+                webview.start()
+                self.status_data['status'] = 'closed'
+            else:
+                import time
+                import subprocess
+                self.last_heartbeat = time.time()
+                start_time = time.time()
                 
-            while self.is_processing or self.status_data.get('status') == 'idle':
-                time.sleep(0.5)
-                if time.time() - self.last_heartbeat > 3.0 and time.time() - start_time > 15.0:
-                    self.status_data['status'] = 'closed'
-                    break
+                app_launched = False
+                self.app_process = None
+                browser_paths = [
+                    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+                    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                ]
+                
+                if os.name == 'nt':
+                    for b_path in browser_paths:
+                        if os.path.exists(b_path):
+                            try:
+                                self.app_process = subprocess.Popen([b_path, f"--app={url}", "--window-size=1100,850"])
+                                app_launched = True
+                                self.active_backend = 'app'
+                                break
+                            except Exception as e:
+                                with open(log_path, 'a') as f:
+                                    f.write(f"Failed to launch browser: {e}\n")
+                                pass
+                
+                if not app_launched:
+                    self.active_backend = 'browser'
+                    webbrowser.open(url)
+                    
+                while self.is_processing or self.status_data.get('status') == 'idle':
+                    time.sleep(0.5)
+                    if time.time() - self.last_heartbeat > 3.0 and time.time() - start_time > 15.0:
+                        self.status_data['status'] = 'closed'
+                        break
 
-            if app_launched and self.app_process:
-                try: self.app_process.terminate()
-                except: pass
+                if app_launched and self.app_process:
+                    try: self.app_process.terminate()
+                    except: pass
 
         server.shutdown()
 
